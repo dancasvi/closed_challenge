@@ -1,0 +1,27 @@
+body {
+  background-color: #e0f7fa; /* Azul clarinho */
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.logo {
+  max-width: 80%;
+  height: auto;
+}
+
+.menu-btn {
+  background-color: #fff176; /* Amarelo claro */
+  color: #333;
+  padding: 15px;
+  margin: 10px auto;
+  width: 90%;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  font-size: 18px;
+  transition: all 0.3s ease;
+}
+
+.menu-btn:hover {
+  background-color: #fff59d;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}

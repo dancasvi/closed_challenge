@@ -1,0 +1,69 @@
+[
+    {
+        "id": 1,
+        "name": "Charmander",
+        "type": "Fire",
+        "level": 5,
+        "evolveLevel": 16,
+        "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/4.png",
+        "description": "A fire lizard Pokémon that is known for its fiery tail.",
+        "region": "Kanto",
+        "startingMoves": [1]
+    },
+    {
+        "id": 2,
+        "name": "Squirtle",
+        "type": "Water", 
+        "level": 5,
+        "evolveLevel": 16, 
+        "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/7.png",
+        "description": "A small turtle Pokémon that can shoot water from its mouth.",
+        "region": "Kanto",
+        "startingMoves": [1]
+    },
+    {
+        "id": 3,
+        "name": "Bulbasaur",
+        "type": "Grass/Poison",
+        "level": 5,
+        "evolveLevel": 16,
+        "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png",
+        "description": "A seed Pokémon that has a plant bulb on its back.",
+        "region": "Kanto",
+        "startingMoves": [5]
+    },
+    {
+        "id": 4,
+        "name": "Torchic",
+        "type": "Fire",
+        "level": 5,
+        "evolveLevel": 16,
+        "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/255.png",
+        "description": "A chick Pokémon that is known for its fiery spirit.",
+        "region": "Hoenn",
+        "startingMoves": [5]
+    },
+    {
+        "id": 5,
+        "name": "Mudkip",
+        "type": "Water",
+        "level": 5,
+        "evolveLevel": 16,
+        "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/258.png",
+        "description": "A mud fish Pokémon that can adapt to various environments.",
+        "region": "Hoenn",
+        "startingMoves": [5]
+    },
+    {
+        "id": 6,
+        "name": "Treecko",
+        "type": "Grass",
+        "level": 5,
+        "evolveLevel": 16,
+        "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/252.png",
+        "description": "A lizard Pokémon that is known for its agility and speed.",
+        "region": "Hoenn",
+        "startingMoves": [1]
+    }
+
+]

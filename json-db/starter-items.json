@@ -1,0 +1,62 @@
+[
+    {
+        "id": 1,
+        "name": "Leftovers",
+        "description": "A held item that gradually restores the holder's HP in battle.",
+        "url-img": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/leftovers.png",
+        "price": 0,
+        "effect": "Restores 1/16 of max HP at the end of each turn.",
+        "effectType": "healing",
+        "condition": "not full-life"
+    },
+    {
+        "id": 2,
+        "name": "Choice Band",
+        "description": "A held item that boosts the holder's power but only allows the use of one move.",
+        "url-img": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/choice-band.png",
+        "price": 0,
+        "effect": "Increases Attack by 50% but restricts to one move.",
+        "effectType": "boost-power",
+        "condition": "single-move-use"
+    },
+    {
+        "id": 3,
+        "name": "Choice Scarf",
+        "description": "A held item that boosts the holder's speed but only allows the use of one move.",
+        "url-img": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/choice-scarf.png",
+        "price": 0,
+        "effect": "Increases Speed by 50% but restricts to one move.",
+        "effectType": "boost-speed",
+        "condition": "single-move-use"
+    },
+    {
+        "id": 4,
+        "name": "Grass Plate",
+        "description": "A plate that boosts the power of Grass-type moves.",
+        "url-img": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/grass-plate.png",
+        "price": 0,
+        "effect": "Increases the power of Grass-type moves by 20%.",
+        "effectType": "boost-type",
+        "condition": "type grass"
+    },
+    {
+        "id": 5,
+        "name": "Water Plate",
+        "description": "A plate that boosts the power of Water-type moves.",
+        "url-img": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/water-plate.png",
+        "price": 0,
+        "effect": "Increases the power of Water-type moves by 20%.",
+        "effectType": "boost-type",
+        "condition": "type water"
+    },
+    {
+        "id": 6,
+        "name": "Fire Plate",
+        "description": "A plate that boosts the power of Fire-type moves.",
+        "url-img": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/fire-plate.png",
+        "price": 0,
+        "effect": "Increases the power of Fire-type moves by 20%.",
+        "effectType": "boost-type",
+        "condition": "type fire"
+    }
+]

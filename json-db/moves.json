@@ -1,0 +1,47 @@
+[
+    {
+        "id": 1,
+        "name": "Tackle",
+        "type": "Normal",
+        "power": 40,
+        "accuracy": 100,
+        "secondaryEffect": null,
+        "description": "A physical attack in which the user charges and slams into the target."
+    },
+    {
+        "id": 2,
+        "name": "Ember",
+        "type": "Fire",
+        "power": 40,
+        "accuracy": 100,
+        "secondaryEffect": "May inflict a burn on the target.",
+        "description": "A basic fire attack that may also leave the target with a burn."
+    },
+    {
+        "id": 3,
+        "name": "Water Gun",
+        "type": "Water",
+        "power": 40,
+        "accuracy": 100,
+        "secondaryEffect": null,
+        "description": "A basic water attack that shoots water at the target."
+    },
+    {
+        "id": 4,
+        "name": "Vine Whip",
+        "type": "Grass",
+        "power": 45,
+        "accuracy": 100,
+        "secondaryEffect": null,
+        "description": "A physical attack in which the user strikes the target with vines."
+    },
+    {
+        "id": 5,
+        "name": "Scratch",
+        "type": "Normal",
+        "power": 40,
+        "accuracy": 100,
+        "secondaryEffect": null,
+        "description": "A physical attack in which the user scratches the target with sharp claws."
+    }
+]
