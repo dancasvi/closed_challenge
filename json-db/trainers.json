@@ -1,0 +1,35 @@
+[
+    {
+        "id": 1,
+        "name": "Bug Catcher",
+        "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/trainers/bug_catcher.png",
+        "region": "Hoenn",
+        "description": "A trainer who specializes in catching and training Bug-type Pokémon.",
+        "pokemon": [
+            {
+                "id": 265,
+                "level": 5,
+                "moves": [5]
+            },
+            {
+                "id": 265,
+                "level": 6,
+                "moves": [5]
+            }
+        ]
+    },
+    {
+        "id": 2,
+        "name": "Youngster",
+        "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/trainers/youngster.png",
+        "region": "Kanto",
+        "description": "A young trainer who is eager to prove his skills.",
+        "pokemon": [
+            {
+                "id": 261,
+                "level": 8,
+                "moves": [1]
+            }
+        ]
+    }
+]

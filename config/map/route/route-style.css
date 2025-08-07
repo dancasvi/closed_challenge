@@ -1,0 +1,123 @@
+:root{
+  --tile: 36px;        /* tamanho do tile */
+  --cols: 18;          /* largura do mapa em tiles */
+  --rows: 12;          /* altura do mapa em tiles */
+  --speed-ms: 120;     /* duração da animação por passo */
+}
+
+@media (max-width: 380px){
+  :root{ --tile: 30px; }
+}
+
+body{ background:#0e0f12; color:#e8e8e8; }
+
+.game-wrap{
+  touch-action: manipulation;
+}
+
+/* área do jogo */
+#game{
+  position: relative;
+  width: calc(var(--cols) * var(--tile));
+  height: calc(var(--rows) * var(--tile));
+  margin: 12px auto;
+  image-rendering: pixelated;
+  overflow: hidden;
+  border: 2px solid #2b2f3a;
+  border-radius: 10px;
+  background: #6dbd6d; /* fallback */
+}
+
+/* camada de tiles do chão */
+.grid{
+  position:absolute; inset:0;
+  display:grid;
+  grid-template-columns: repeat(var(--cols), 1fr);
+  grid-template-rows: repeat(var(--rows), 1fr);
+}
+.tile{
+  width: var(--tile);
+  height: var(--tile);
+  background-size: cover;
+}
+
+/* GRAMA (1x1, sem colisão) */
+.tile.grass{
+  /* Ex.: background-image:url('sprites/grass.png'); */
+  /* background: #76c76e; */
+  background-image:url('assets-route/grass.png');
+}
+
+/* CAMINHO (1x1, sem colisão) */
+.tile.path{
+  /* Ex.: background-image:url('sprites/path.png'); */
+  background: #cda47a;            /* marrom clarinho */
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,0);
+}
+
+/* camada de árvores (objetos 4x4, com colisão) */
+.trees-layer{
+  position:absolute; inset:0;
+  pointer-events:none;
+}
+.tree{
+  position:absolute;
+  width: calc(var(--tile) * 4);
+  height: calc(var(--tile) * 4);
+  /* Ex.: background-image:url('sprites/tree.png'); */
+  background-image:url('assets-route/tree.png');
+  /* background: #2c6e49; */
+  background-size: cover;
+  image-rendering: pixelated;
+}
+
+/* jogador */
+/* #player{
+  position:absolute;
+  width: calc(var(--tile) * 1.2);
+  height: calc(var(--tile) * 1.5);
+  left: 0; top: 0;
+  transform: translate3d(0,0,0);
+  transition: transform var(--speed-ms) linear;
+  z-index: 5;
+  background-image:url('./../../../assets/trainers/5/sprite-map.png');
+  border: 1px solid rgba(0,0,0,.15);
+  border-radius: 2px;
+  image-rendering: pixelated;
+} */
+ /* jogador */
+#player{
+  position:absolute;
+  width: calc(var(--tile) * 1.2);
+  height: calc(var(--tile) * 1.5);
+  left: 0; top: 0;
+  transform: translate3d(0,0,0) scale(0.85); /* ↓ escala global */
+  transform-origin: top left; /* mantém ancorado ao canto */
+  transition: transform var(--speed-ms) linear;
+  z-index: 5;
+
+  background-image:url('./../../../assets/trainers/5/sprite-map.png');
+  background-size: cover; /* garante que a imagem cubra o player */
+  border: 1px solid rgba(0,0,0,.15);
+  border-radius: 2px;
+  image-rendering: pixelated;
+}
+
+/* Escala ainda menor para telas pequenas */
+@media (max-width: 380px){
+  #player{
+    transform: translate3d(0,0,0) scale(0.7);
+  }
+}
+
+
+/* D-pad mobile */
+.dpad{
+  user-select:none;
+  width: 220px;
+  margin: 8px auto 18px;
+}
+.dpad .btn{
+  width: 70px; height: 70px;
+  border-radius: 10px;
+}

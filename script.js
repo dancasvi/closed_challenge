@@ -5,6 +5,7 @@ $(document).ready(function () {
 
     if (page) {
       // Redireciona para pages/<page>/<page>.html
+      debugger;
       if(page == "begin-journey") {
         if(checkIfHaveAccount()) {
           window.location.href = `pages/${page}/${page}.html`;

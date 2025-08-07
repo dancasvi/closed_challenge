@@ -1,0 +1,121 @@
+[
+    {
+        "id": 1,
+        "name": "Zigzagoon",
+        "type": "Normal",
+        "evolveLevel": 20,
+        "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/263.png",
+        "description": "A raccoon-like Pokémon that is known for its zigzag running pattern.",
+        "region": "Hoenn",
+        "catchRate": 40,
+        "appearanceRate": 50,
+        "exp": 50,
+        "moves": [
+            {
+                "id": 5, "level": 5
+            }
+        ]
+    },
+    {
+        "id": 2,
+        "name": "Poochyena",
+        "type": "Dark",
+        "evolveLevel": 18,
+        "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/261.png",
+        "description": "A small, wolf-like Pokémon that is known for its keen sense of smell.",
+        "region": "Hoenn",
+        "catchRate": 40,
+        "appearanceRate": 30,
+        "exp": 50,
+        "moves": [
+            {
+                "id": 1, "level": 5
+            }
+        ]
+    },
+    {
+        "id": 3,
+        "name": "Lotad",
+        "type": "Water/Grass",
+        "evolveLevel": 14,
+        "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/270.png",
+        "description": "A small, lily pad-like Pokémon that floats on water.",
+        "region": "Hoenn",
+        "catchRate": 20,
+        "appearanceRate": 20,
+        "exp": 50,
+        "moves": [
+            {
+                "id": 1, "level": 5
+            }
+        ]
+    },
+    {
+        "id": 4,
+        "name": "Seedot",
+        "type": "Grass",
+        "evolveLevel": 14,
+        "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/273.png",
+        "description": "A small, acorn-like Pokémon that is known for its ability to blend in with trees.",
+        "region": "Hoenn",
+        "catchRate": 20,
+        "appearanceRate": 20,
+        "exp": 50,
+        "moves": [
+            {
+                "id": 1, "level": 5
+            }
+        ]
+    },
+    {
+        "id": 5,
+        "name": "Ralts",
+        "type": "Psychic/Fairy",
+        "evolveLevel": 20,
+        "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/280.png",
+        "description": "A small, humanoid Pokémon that is known for its psychic abilities.",
+        "region": "Hoenn",
+        "catchRate": 10,
+        "appearanceRate": 5,
+        "exp": 50,
+        "moves": [
+            {
+                "id": 1, "level": 5
+            }
+        ]
+    },
+    {
+        "id": 6,
+        "name": "Wingull",
+        "type": "Water/Flying",
+        "evolveLevel": 25,
+        "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/278.png",
+        "description": "A seagull-like Pokémon that is known for its ability to glide over water.",
+        "region": "Hoenn",
+        "catchRate": 20,
+        "appearanceRate": 15,
+        "exp": 50,
+        "moves": [
+            {
+                "id": 3, "level": 5
+            }
+        ]
+    },
+    {
+        "id": 7,
+        "name": "Wurmple",
+        "type": "Bug",
+        "evolveLevel": 7,
+        "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/265.png",
+        "description": "A small, caterpillar-like Pokémon that is known for its ability to evolve into different forms.",
+        "region": "Hoenn",
+        "catchRate": 45,
+        "appearanceRate": 40,
+        "exp": 50,
+        "moves": [
+            {
+                "id": 5, "level": 5
+            }
+        ]
+    }
+]

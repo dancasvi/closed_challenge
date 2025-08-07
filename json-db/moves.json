@@ -5,8 +5,10 @@
         "type": "Normal",
         "power": 40,
         "accuracy": 100,
+        "priority": 0,
         "secondaryEffect": null,
-        "description": "A physical attack in which the user charges and slams into the target."
+        "description": "A physical attack in which the user charges and slams into the target.",
+        "effect": null
     },
     {
         "id": 2,
@@ -14,8 +16,10 @@
         "type": "Fire",
         "power": 40,
         "accuracy": 100,
-        "secondaryEffect": "May inflict a burn on the target.",
-        "description": "A basic fire attack that may also leave the target with a burn."
+        "priority": 0,
+        "secondaryEffect": "burn",
+        "description": "A basic fire attack that may also leave the target with a burn.",
+        "effect": "burn 10%"
     },
     {
         "id": 3,
@@ -23,8 +27,10 @@
         "type": "Water",
         "power": 40,
         "accuracy": 100,
+        "priority": 0,
         "secondaryEffect": null,
-        "description": "A basic water attack that shoots water at the target."
+        "description": "A basic water attack that shoots water at the target.",
+        "effect": null
     },
     {
         "id": 4,
@@ -32,8 +38,10 @@
         "type": "Grass",
         "power": 45,
         "accuracy": 100,
+        "priority": 0,
         "secondaryEffect": null,
-        "description": "A physical attack in which the user strikes the target with vines."
+        "description": "A physical attack in which the user strikes the target with vines.",
+        "effect": null
     },
     {
         "id": 5,
@@ -41,7 +49,31 @@
         "type": "Normal",
         "power": 40,
         "accuracy": 100,
+        "priority": 0,
         "secondaryEffect": null,
-        "description": "A physical attack in which the user scratches the target with sharp claws."
+        "description": "A physical attack in which the user scratches the target with sharp claws.",
+        "effect": null
+    },
+    {
+        "id": 6,
+        "name": "Quick Attack",
+        "type": "Normal",
+        "power": 40,
+        "accuracy": 100,
+        "priority": 1,
+        "secondaryEffect": null,
+        "description": "A quick physical attack that allows the user to strike first.",
+        "effect": null
+    },
+    {
+        "id": 7,
+        "name": "Absorb",
+        "type": "Grass",
+        "power": 20,
+        "accuracy": 100,
+        "priority": 0,
+        "secondaryEffect": "healing",
+        "description": "A Grass-type attack that drains the target's energy and restores the user's HP.",
+        "effect": "dmg/4"
     }
 ]

@@ -8,7 +8,15 @@
         "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/4.png",
         "description": "A fire lizard Pokémon that is known for its fiery tail.",
         "region": "Kanto",
-        "startingMoves": [1]
+        "startingMoves": [1],
+        "moves": [
+            {
+                "id": 1, "level": 5
+            },
+            {
+                "id": 2, "level": 7
+            }
+        ]
     },
     {
         "id": 2,
@@ -19,7 +27,15 @@
         "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/7.png",
         "description": "A small turtle Pokémon that can shoot water from its mouth.",
         "region": "Kanto",
-        "startingMoves": [1]
+        "startingMoves": [1],
+        "moves": [
+            {
+                "id": 1, "level": 5
+            },
+            {
+                "id": 3, "level": 7
+            }
+        ]
     },
     {
         "id": 3,
@@ -30,7 +46,15 @@
         "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png",
         "description": "A seed Pokémon that has a plant bulb on its back.",
         "region": "Kanto",
-        "startingMoves": [5]
+        "startingMoves": [5],
+        "moves": [
+            {
+                "id": 5, "level": 5
+            },
+            {
+                "id": 4, "level": 7
+            }
+        ]
     },
     {
         "id": 4,
@@ -41,7 +65,15 @@
         "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/255.png",
         "description": "A chick Pokémon that is known for its fiery spirit.",
         "region": "Hoenn",
-        "startingMoves": [5]
+        "startingMoves": [5],
+        "moves": [
+            {
+                "id": 5, "level": 5
+            },
+            {
+                "id": 2, "level": 7
+            }
+        ]
     },
     {
         "id": 5,
@@ -52,7 +84,15 @@
         "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/258.png",
         "description": "A mud fish Pokémon that can adapt to various environments.",
         "region": "Hoenn",
-        "startingMoves": [5]
+        "startingMoves": [5],
+        "moves": [
+            {
+                "id": 5, "level": 5
+            },
+            {
+                "id": 3, "level": 7
+            }
+        ]
     },
     {
         "id": 6,
@@ -63,7 +103,15 @@
         "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/252.png",
         "description": "A lizard Pokémon that is known for its agility and speed.",
         "region": "Hoenn",
-        "startingMoves": [1]
+        "startingMoves": [1],
+        "moves": [
+            {
+                "id": 1, "level": 5
+            },
+            {
+                "id": 4, "level": 7
+            }
+        ]
     }
 
 ]
