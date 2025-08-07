@@ -6,26 +6,31 @@
   const TILE = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--tile'));
   const SPEED = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--speed-ms'));
 
-  // Configurações de geração
+  // ==== NOVO: Rota atual (ajuste conforme seu jogo) ====
+  const CURRENT_ROUTE_ID = 1;
+
+  // Configurações de geração visual
   const TREE_COUNT = Math.max(4, Math.floor((COLS*ROWS) / 90)); // árvores (4x4)
-  const PATHS = 2;             // quantas trilhas (random walks) gerar
-  const PATH_STEPS = COLS * 1.5; // passos por trilha
+  const PATHS = 2;              // quantas trilhas gerar
+  const PATH_STEPS = COLS * 1.5;
 
   // grade de colisão: false = livre (mato/caminho), true = bloqueado (árvore)
   const solid = Array.from({length: ROWS}, ()=> Array(COLS).fill(false));
-  // mapa para marcar caminho
+  // mapa para marcar caminho (true = path, false = grass)
   const pathMap = Array.from({length: ROWS}, ()=> Array(COLS).fill(false));
 
   const $ground = $('#ground');
   const $trees = $('#trees');
   const $player = $('#player');
 
+  // ==== NOVO: dados carregados ====
+  let routesData = [];
+  let pokemonData = [];
+
   /* ========= FUNÇÕES DE GERAÇÃO ========= */
 
-  // Gera trilhas (caminho marrom) por random walk
   function genPaths(){
     for(let p=0; p<PATHS; p++){
-      // começa em uma borda aleatória
       let side = Math.floor(Math.random()*4);
       let r = (side === 0) ? 0 : (side === 1) ? ROWS-1 : Math.floor(Math.random()*ROWS);
       let c = (side === 2) ? 0 : (side === 3) ? COLS-1 : Math.floor(Math.random()*COLS);
@@ -33,16 +38,13 @@
       for(let s=0; s<PATH_STEPS; s++){
         pathMap[r][c] = true;
 
-        // direção tendenciosa para "avançar" no mapa
-        let dirs = [
-          [1,0],[-1,0],[0,1],[0,-1]
-        ];
+        let dirs = [[1,0],[-1,0],[0,1],[0,-1]];
         let [dr, dc] = dirs[Math.floor(Math.random()*dirs.length)];
-        // pequena chance de "alargar" o caminho
+
         if(Math.random()<0.2){
-          let dirs2 = dirs[Math.floor(Math.random()*dirs.length)];
-          let rr = clamp(r+dirs2[0], 0, ROWS-1);
-          let cc = clamp(c+dirs2[1], 0, COLS-1);
+          let [dr2, dc2] = dirs[Math.floor(Math.random()*dirs.length)];
+          let rr = clamp(r+dr2, 0, ROWS-1);
+          let cc = clamp(c+dc2, 0, COLS-1);
           pathMap[rr][cc] = true;
         }
         r = clamp(r+dr, 0, ROWS-1);
@@ -53,7 +55,6 @@
 
   function clamp(v, a, b){ return Math.max(a, Math.min(b, v)); }
 
-  // Piso (grass ou path)
   function genGround(){
     let frag = document.createDocumentFragment();
     for(let r=0;r<ROWS;r++){
@@ -66,14 +67,12 @@
     $ground.append(frag);
   }
 
-  // Árvores (4x4, sólidas)
   function canPlaceTree(row, col){
     if(row+3 >= ROWS || col+3 >= COLS) return false;
-    // Evita colocar árvore sobre caminho (fica mais bonito)
     for(let r=row; r<row+4; r++){
       for(let c=col; c<col+4; c++){
         if(solid[r][c]) return false;
-        if(pathMap[r][c]) return false;
+        if(pathMap[r][c]) return false; // não colocar árvore sobre caminho
       }
     }
     return true;
@@ -106,11 +105,7 @@
   }
 
   /* ========= JOGADOR ========= */
-  let player = {
-    row: Math.floor(ROWS/2),
-    col: Math.floor(COLS/2),
-    moving: false
-  };
+  let player = { row: Math.floor(ROWS/2), col: Math.floor(COLS/2), moving: false };
 
   function setPlayerPos(){
     $player.css('transform', `translate3d(${player.col*TILE}px, ${player.row*TILE}px, 0)`);
@@ -120,6 +115,42 @@
     if(newRow < 0 || newRow >= ROWS || newCol < 0 || newCol >= COLS) return false; // borda
     if(solid[newRow][newCol]) return false; // árvore
     return true; // mato e caminho são livres
+  }
+
+  // ==== NOVO: utilitários de encontro ====
+  function isGrass(row, col){
+    // grass = não é árvore e não é path
+    if(row < 0 || row >= ROWS || col < 0 || col >= COLS) return false;
+    if(solid[row][col]) return false;       // área sólida (árvore)
+    return !pathMap[row][col];              // se não é caminho, é grama
+  }
+
+  function getRouteById(id){
+    return routesData.find(r => r.id === id);
+  }
+
+  function getPokemonById(id){
+    return pokemonData.find(p => p.id === id);
+  }
+
+  // 10% de chance; escolhe um pokémon da rota e loga no console
+  function maybeEncounter(row, col){
+    if(!isGrass(row, col)) return;                // só no mato
+    if(!routesData.length || !pokemonData.length) return; // ainda não carregado
+    if(Math.random() >= 0.10) return;             // 10% de chance
+
+    const route = getRouteById(CURRENT_ROUTE_ID);
+    if(!route || !Array.isArray(route.pokeEnemies) || route.pokeEnemies.length === 0) return;
+
+    // filtra inimigos que existem no pokemon.json
+    const validIds = route.pokeEnemies.filter(id => !!getPokemonById(id));
+    if(validIds.length === 0) return;
+
+    const chosenId = validIds[Math.floor(Math.random() * validIds.length)];
+    const poke = getPokemonById(chosenId);
+
+    // Resultado: loga no console
+    console.log('[ENCONTRO] Pokémon encontrado:', poke);
   }
 
   function step(dx, dy){
@@ -132,6 +163,10 @@
     player.col = targetCol;
     player.moving = true;
     setPlayerPos();
+
+    // ==== NOVO: checar encontro após mover ====
+    maybeEncounter(player.row, player.col);
+
     setTimeout(()=>{ player.moving = false; }, SPEED);
   }
 
@@ -183,13 +218,20 @@
       endHold();
     });
 
+  /* ========= CARREGAR DADOS (NOVO) ========= */
+  function loadData(){
+    const p1 = $.getJSON('../../../json-db/routes.json').then(data => { routesData = data || []; });
+    const p2 = $.getJSON('../../../json-db/pokemon.json').then(data => { pokemonData = data || []; });
+    return Promise.all([p1, p2]);
+  }
+
   /* ========= INICIALIZAÇÃO ========= */
   function init(){
-    genPaths();   // gera caminho marrom (sem colisão)
-    genGround();  // pinta grass ou path
-    genTrees();   // adiciona árvores (com colisão)
+    genPaths();
+    genGround();
+    genTrees();
 
-    // garantir que o spawn não caia dentro de árvore
+    // garantir spawn em tile livre
     if(solid[player.row][player.col]){
       outer: for(let r=0;r<ROWS;r++){
         for(let c=0;c<COLS;c++){
@@ -198,6 +240,11 @@
       }
     }
     setPlayerPos();
+
+    // carrega JSONs (encontros só acontecem após carregar)
+    loadData().catch(err => {
+      console.error('Erro ao carregar JSONs:', err);
+    });
   }
 
   init();
