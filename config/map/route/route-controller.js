@@ -151,6 +151,7 @@
 
     // Resultado: loga no console
     console.log('[ENCONTRO] Pokémon encontrado:', poke);
+    alert(`[ENCONTRO] Pokémon encontrado: ${poke.name}`);
   }
 
   function step(dx, dy){
