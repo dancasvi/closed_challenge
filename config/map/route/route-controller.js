@@ -151,7 +151,8 @@
 
     // Resultado: loga no console
     console.log('[ENCONTRO] Pokémon encontrado:', poke);
-    alert(`[ENCONTRO] Pokémon encontrado: ${poke.name}`);
+    // alert(`[ENCONTRO] Pokémon encontrado: ${poke.name}`);
+    playTransition(1500);
   }
 
   function step(dx, dy){
@@ -218,6 +219,31 @@
       e.preventDefault();
       endHold();
     });
+
+    function playTransition(durationMs = 1000) {
+      const $t = $('#transition');
+
+      if ($t.length === 0) return;
+
+      // mostra
+      $('body').addClass('transition-lock');
+      $t.removeClass('d-none transition-fade-out')
+        .addClass('transition-fade-in');
+
+      // espera o "in", mantém por um tempo e esmaece
+      const hold = Math.max(0, durationMs - 340); // compensa animações
+
+      // Depois do hold, faz fade-out e esconde
+      setTimeout(() => {
+        $t.removeClass('transition-fade-in').addClass('transition-fade-out');
+
+        // quando terminar o fade-out, esconde a div
+        setTimeout(() => {
+          $t.addClass('d-none').removeClass('transition-fade-out');
+          $('body').removeClass('transition-lock');
+        }, 240);
+      }, hold);
+    }
 
   /* ========= CARREGAR DADOS (NOVO) ========= */
   function loadData(){

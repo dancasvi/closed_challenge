@@ -71,20 +71,6 @@ body{ background:#0e0f12; color:#e8e8e8; }
   image-rendering: pixelated;
 }
 
-/* jogador */
-/* #player{
-  position:absolute;
-  width: calc(var(--tile) * 1.2);
-  height: calc(var(--tile) * 1.5);
-  left: 0; top: 0;
-  transform: translate3d(0,0,0);
-  transition: transform var(--speed-ms) linear;
-  z-index: 5;
-  background-image:url('./../../../assets/trainers/5/sprite-map.png');
-  border: 1px solid rgba(0,0,0,.15);
-  border-radius: 2px;
-  image-rendering: pixelated;
-} */
  /* jogador */
 #player{
   position:absolute;
@@ -121,3 +107,108 @@ body{ background:#0e0f12; color:#e8e8e8; }
   width: 70px; height: 70px;
   border-radius: 10px;
 }
+
+
+
+
+/* BATTLE STARTING */
+/* ===== Overlay de Transição dentro do #game ===== */
+#game {
+  position: relative; /* garante que o overlay use este container como referência */
+}
+
+#game .transition-screen {
+  position: absolute;
+  inset: 0;                     /* cobre 100% do #game */
+  z-index: 999;                  /* acima de tudo dentro do #game */
+  background: #000;
+  display: block;
+  pointer-events: none;
+}
+
+body.transition-lock {
+  overflow: hidden;
+  touch-action: none;
+}
+
+/* Container centralizado */
+#game .transition-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Flash radial */
+#game .flash {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center,
+    rgba(255,255,255,0.95) 0%,
+    rgba(255,255,255,0.2) 40%,
+    rgba(0,0,0,0) 60%);
+  opacity: 0;
+  animation: flashIn 350ms ease-out forwards;
+}
+@keyframes flashIn {
+  0%   { opacity: 0; }
+  20%  { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+/* Pokébola */
+#game .pokeball {
+  position: relative;
+  width: min(180px, 40%);
+  height: min(180px, 40%);
+  border-radius: 50%;
+  box-shadow: 0 0 0 4px #111, 0 10px 24px rgba(0,0,0,.45);
+  animation: pulse 800ms ease-in-out 1;
+}
+@keyframes pulse {
+  0%   { transform: scale(0.85); }
+  50%  { transform: scale(0.95); }
+  100% { transform: scale(0.85); }
+}
+
+#game .pokeball .top, 
+#game .pokeball .bottom {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+}
+#game .pokeball .top {
+  background: #ee2e31;
+  clip-path: inset(0 0 50% 0);
+}
+#game .pokeball .bottom {
+  background: #fff;
+  clip-path: inset(50% 0 0 0);
+}
+#game .pokeball .center-line {
+  position: absolute;
+  left: 0; right: 0; top: 50%;
+  height: 10%;
+  transform: translateY(-50%);
+  background: #111;
+}
+#game .pokeball .button {
+  position: absolute;
+  left: 50%; top: 50%;
+  transform: translate(-50%, -50%);
+  width: 30%;
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
+  background: #fff;
+  border: 6px solid #111;
+  box-shadow: inset 0 0 0 6px #e9e9e9;
+}
+
+/* Fades */
+.transition-fade-in  { animation: fadeIn 120ms ease-out forwards; }
+.transition-fade-out { animation: fadeOut 220ms ease-in forwards; }
+@keyframes fadeIn  { from { opacity: 0; } to { opacity: 1; } }
+@keyframes fadeOut { from { opacity: 1; } to { opacity: 0; } }

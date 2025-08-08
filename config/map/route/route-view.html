@@ -19,6 +19,20 @@
     <div class="grid" id="ground"></div>
     <div class="trees-layer" id="trees"></div>
     <div id="player" aria-label="player"></div>
+
+    <!-- TRANSITION SCREEN -->
+    <div id="transition" class="transition-screen d-none">
+      <div class="transition-content">
+        <!-- “flash” + pokéball pulsando -->
+        <div class="flash"></div>
+        <div class="pokeball">
+          <div class="top"></div>
+          <div class="center-line"></div>
+          <div class="button"></div>
+          <div class="bottom"></div>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- D-pad -->
@@ -32,6 +46,9 @@
       <button class="btn btn-secondary m-1 dir" data-dir="right">▶</button>
     </div>
   </div>
+
+
+
 
   <p class="text-center small opacity-75">
     Use as setas/WASD ou o D-pad.
