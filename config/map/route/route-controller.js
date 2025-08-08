@@ -151,8 +151,13 @@
 
     // Resultado: loga no console
     console.log('[ENCONTRO] Pokémon encontrado:', poke);
-    // alert(`[ENCONTRO] Pokémon encontrado: ${poke.name}`);
+    localStorage.setItem('battleData', JSON.stringify({ "pokeId": chosenId }));
+
     playTransition(1500);
+
+    setTimeout(() => {
+      window.location.href = '../../battle/battle.html';
+    }, 1550);
   }
 
   function step(dx, dy){
