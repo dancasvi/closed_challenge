@@ -1,13 +1,17 @@
 $(function(){
+  // (opcional) limpar battleData como você comentou:
+  // localStorage.removeItem('battleData');
+
   // ----- Storage -----
   const closedData = safeParse(localStorage.getItem('closed_challenge_account')) || {};
   const battleData = safeParse(localStorage.getItem('battleData')) || {};
+  const bagInfo = getBagInfo(); // { pokeball: number, potion: number }
 
   // ----- Regras -----
   const MAX_HP = 500;
   const BASE_ATK = 100;
   const BASE_DEF = 100;
-  const MSG_DELAY_MS = 1500; // tempo para mensagens de dano antes do próximo passo
+  const MSG_DELAY_MS = 1500; // tempo para mensagens de dano
 
   // ----- Estado -----
   let pokemons = [], items = [], moves = [];
@@ -38,6 +42,7 @@ $(function(){
     renderHUDs();
     renderSprites();
     bindMenus();
+    updateBagMenuCounts(); // mostra as quantidades no menu da mochila
   }).catch(()=>{
     $('#battle-text').text('Erro ao carregar dados.');
   });
@@ -97,12 +102,10 @@ $(function(){
   /* ============== UI / Menus ============== */
 
   function renderHUDs(){
-    // Player
     $('#player-name').text(player.base.name || 'Você');
     $('#player-level').text('Lv ' + (player.level ?? '—'));
     setHp($('#player-hp'), toPct(player.currentHp, player.maxHp));
 
-    // Opponent
     $('#opponent-name').text(opponent.base.name || '???');
     $('#opponent-level').text('Lv ' + (opponent.level ?? '—'));
     setHp($('#opponent-hp'), toPct(opponent.currentHp, opponent.maxHp));
@@ -119,26 +122,33 @@ $(function(){
   }
 
   function bindMenus(){
-    // Abrir submenu de moves
+    // Lutar → submenu de moves
     $('[data-action="attack"]').off('click').on('click', openMovesMenu);
 
-    // Placeholder
-    $('[data-action="bag"]').off('click').on('click', ()=> $('#battle-text').text('Abra a mochila (itens ainda não fazem nada).'));
+    // Mochila → submenu de itens
+    $('[data-action="bag"]').off('click').on('click', openBagMenu);
+
+    // Pokémon (placeholder)
     $('[data-action="pokemon"]').off('click').on('click', ()=> $('#battle-text').text('Trocar de Pokémon (placeholder).'));
 
-    // Fugir -> rota
+    // Fugir → rota
     $('[data-action="run"]').off('click').on('click', ()=>{
-      // redireciona para config/map/route/route-view.html
-      localStorage.removeItem('battleData');
       window.location.href = '../map/route/route-view.html';
     });
 
-    // Voltar do submenu
-    $('#btn-back').off('click').on('click', ()=> {
-      $('#moves-menu').addClass('d-none');
-      $('#action-menu').removeClass('d-none');
-      $('#battle-text').text('Escolha sua ação.');
+    // Voltar dos submenus
+    $('#btn-back').off('click').on('click', backToActions);
+    $('#btn-back-bag').off('click').on('click', backToActions);
+
+    // Ações de clique na mochila (ainda sem efeito real)
+    $('#btn-pokeball').off('click').on('click', ()=>{
+      console.log(`Usar Poké Ball (x${bagInfo.pokeball}) — sem efeito por enquanto`);
+      $('#battle-text').text(`Poké Ball (x${bagInfo.pokeball}) — ainda sem efeito.`);
     });
+    $('#btn-potion').off('click').on('click', ()=>{
+      usePotion();
+    });
+
   }
 
   function openMovesMenu(){
@@ -158,10 +168,35 @@ $(function(){
         $('<div class="col-6"></div>').append($btn).appendTo($container);
       });
     }
-
-    $('#action-menu').addClass('d-none');
-    $('#moves-menu').removeClass('d-none');
+    toggleMenus('moves');
     $('#battle-text').text('Escolha um movimento.');
+  }
+
+  function openBagMenu(){
+    updateBagMenuCounts();
+    toggleMenus('bag');
+    $('#battle-text').text('Mochila aberta.');
+  }
+
+  function updateBagMenuCounts(){
+    $('#btn-pokeball').text(`Poké Ball (x${bagInfo.pokeball})`);
+    $('#btn-potion').text(`Potion (x${bagInfo.potion})`);
+  }
+
+  function backToActions(){
+    toggleMenus('actions');
+    $('#battle-text').text('Escolha sua ação.');
+  }
+
+  function toggleMenus(which){
+    // esconde todos
+    $('#action-menu').addClass('d-none');
+    $('#moves-menu').addClass('d-none');
+    $('#bag-menu').addClass('d-none');
+
+    if(which === 'moves') $('#moves-menu').removeClass('d-none');
+    else if(which === 'bag') $('#bag-menu').removeClass('d-none');
+    else $('#action-menu').removeClass('d-none');
   }
 
   /* ============== Turnos / Combate ============== */
@@ -195,7 +230,6 @@ $(function(){
     setHp($(hpSelector), toPct(defender.currentHp, defender.maxHp));
     $('#battle-text').text(`${attacker.base.name} usou ${move?.name || 'ataque'}! Dano: ${dmg}`);
 
-    // espera para a mensagem de dano
     setTimeout(()=> done && done(), MSG_DELAY_MS);
   }
 
@@ -214,13 +248,11 @@ $(function(){
 
   /* ============== Funções pedidas ============== */
 
-  // checkItem: loga itens dos dois pokes em campo a cada ataque
   function checkItem(attacker, defender){
     console.log(`poke ${attacker.base.name} tem item ${attacker.item ? attacker.item.name : 'Nenhum'}; ` +
                 `poke ${defender.base.name} tem item ${defender.item ? defender.item.name : 'Nenhum'}`);
   }
 
-  // calcDamage: (atk do atacante + move.power) - def do defensor
   function calcDamage(attacker, defender, move){
     const atk = Number(attacker.atk) || 0;
     const def = Number(defender.def) || 0;
@@ -228,7 +260,65 @@ $(function(){
     return (atk + power) - def;
   }
 
+// ---- coloque essa função junto das outras (perto de performAttack/backToActionsSoon)
+
+  function usePotion(){
+    // vida cheia → não usa, volta pro menu principal imediatamente
+    if(player.currentHp >= player.maxHp){
+      $('#battle-text').text('You are already at full health!');
+      toggleMenus('actions'); // garante que volta pro menu principal
+      return;
+    }
+
+    // sem potions → só avisa (permanece na mochila)
+    if(bagInfo.potion <= 0){
+      $('#battle-text').text('Você não tem Potions!');
+      return;
+    }
+
+    // consome 1 potion e cura 20
+    const before = player.currentHp;
+    player.currentHp = Math.min(player.maxHp, player.currentHp + 20);
+    const healed = player.currentHp - before;
+
+    bagInfo.potion -= 1;
+    localStorage.setItem('bag_info', JSON.stringify(bagInfo));
+    updateBagMenuCounts();
+
+    setHp($('#player-hp'), toPct(player.currentHp, player.maxHp));
+    $('#battle-text').text(`${player.base.name} usou uma Potion! +${healed} HP.`);
+
+    // consumir turno: oculta menus enquanto o oponente age
+    toggleMenus(); // esconde todos
+
+    // depois do delay, oponente ataca (se ainda estiver vivo)
+    setTimeout(()=>{
+      if(isFainted(opponent)){
+        backToActionsSoon();
+        return;
+      }
+      const oMv = pickRandomMove(opponent.moveset);
+      performAttack(opponent, player, oMv, '#player-hp', ()=>{
+        if(isFainted(player)){
+          $('#battle-text').text(`${player.base.name} desmaiou!`);
+        }
+        backToActionsSoon();
+      });
+    }, MSG_DELAY_MS);
+  }
+
+
+
   /* ============== Utils ============== */
+
+  function getBagInfo(){
+    // Esperado algo como: { "pokeball": 3, "potion": 2 }
+    const raw = safeParse(localStorage.getItem('bag_info')) || {};
+    const pokeball = Number(raw.pokeball ?? raw.pokeballs ?? 0);
+    const potion   = Number(raw.potion ?? 0);
+    return { pokeball: isNaN(pokeball)?0:pokeball, potion: isNaN(potion)?0:potion };
+    // Se sua estrutura for diferente, me diga que ajusto o parser rapidinho.
+  }
 
   function setHp($bar, pct){
     const val = clamp(Math.round(pct), 0, 100);

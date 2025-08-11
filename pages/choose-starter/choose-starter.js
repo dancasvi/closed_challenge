@@ -90,7 +90,8 @@ $(document).ready(function () {
                 "pokemon-1": {
                     idpoke: chosenPokemon.id,
                     currentLevel: chosenPokemon.level,
-                    moves: chosenPokemon.startingMoves
+                    moves: chosenPokemon.startingMoves,
+                    currentExp: 0
                 },
                 iditem: parseInt(selectedItemId)
             };

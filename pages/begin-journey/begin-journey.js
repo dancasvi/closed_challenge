@@ -10,7 +10,9 @@ $(document).ready(function() {
 
     function getAccountInfo() {
         let account = localStorage.getItem('closed_challenge_account');
+        localStorage.setItem('bag_info', JSON.stringify({ pokeball: 10, potion: 10 }));
         let bagInfo = localStorage.getItem('bag_info');
+
 
         account = account ? JSON.parse(account) : null;
         bagInfo = bagInfo ? JSON.parse(bagInfo) : null;
