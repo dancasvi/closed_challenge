@@ -8,10 +8,10 @@ $(function(){
   const bagInfo = getBagInfo(); // { pokeball: number, potion: number }
 
   // ----- Regras -----
-  const MAX_HP = 500;
+  const MAX_HP = 100;
   const BASE_ATK = 100;
   const BASE_DEF = 100;
-  const MSG_DELAY_MS = 1500; // tempo para mensagens de dano
+  const MSG_DELAY_MS = 200; // tempo para mensagens de dano
 
   // ----- Estado -----
   let pokemons = [], items = [], moves = [];
@@ -140,7 +140,7 @@ $(function(){
     $('#btn-back').off('click').on('click', backToActions);
     $('#btn-back-bag').off('click').on('click', backToActions);
 
-    // Ações de clique na mochila (ainda sem efeito real)
+    // Ações de clique na mochila
     $('#btn-pokeball').off('click').on('click', ()=>{
       console.log(`Usar Poké Ball (x${bagInfo.pokeball}) — sem efeito por enquanto`);
       $('#battle-text').text(`Poké Ball (x${bagInfo.pokeball}) — ainda sem efeito.`);
@@ -149,6 +149,13 @@ $(function(){
       usePotion();
     });
 
+    // Pós-batalha
+    $('#btn-exit').off('click').on('click', ()=>{
+      window.location.href = '../map/route/route-view.html';
+    });
+    $('#btn-catch').off('click').on('click', ()=>{
+      $('#battle-text').text('Capturar: em breve 😉');
+    });
   }
 
   function openMovesMenu(){
@@ -193,9 +200,11 @@ $(function(){
     $('#action-menu').addClass('d-none');
     $('#moves-menu').addClass('d-none');
     $('#bag-menu').addClass('d-none');
+    $('#post-battle-menu').addClass('d-none');
 
     if(which === 'moves') $('#moves-menu').removeClass('d-none');
     else if(which === 'bag') $('#bag-menu').removeClass('d-none');
+    else if(which === 'post') $('#post-battle-menu').removeClass('d-none');
     else $('#action-menu').removeClass('d-none');
   }
 
@@ -208,8 +217,7 @@ $(function(){
     // Player ataca primeiro
     performAttack(player, opponent, move, '#opponent-hp', ()=>{
       if(isFainted(opponent)){
-        $('#battle-text').text(`${opponent.base.name} desmaiou!`);
-        backToActionsSoon();
+        handleOpponentFainted();
         return;
       }
       // Oponente responde
@@ -241,32 +249,74 @@ $(function(){
 
   function backToActionsSoon(){
     setTimeout(()=>{
-      $('#moves-menu').addClass('d-none');
-      $('#action-menu').removeClass('d-none');
+      toggleMenus('actions');
     }, 200);
+  }
+
+  /* ============== Pós-batalha / EXP ============== */
+
+  function handleOpponentFainted(){
+    // calcula EXP do oponente (se não houver no json, usa 100)
+    const expGain = getOpponentExp(opponent.base);
+    const result = awardExperience(expGain); // persiste e atualiza player.level/exp
+    renderHUDs(); // atualiza HUD de nível, se mudou
+
+    // mensagem de ganho de exp e possíveis level ups
+    if(result.leveledUp > 0){
+      $('#battle-text').text(
+        `${opponent.base.name} desmaiou! +${expGain} EXP. Level up x${result.leveledUp} → Lv ${result.newLevel} (EXP atual: ${result.currentExp}).`
+      );
+    }else{
+      $('#battle-text').text(
+        `${opponent.base.name} desmaiou! +${expGain} EXP. EXP atual: ${result.currentExp}/${player.level*100}.`
+      );
+    }
+
+    // mostra menu pós-batalha (Capturar / Sair)
+    toggleMenus('post');
+  }
+
+  function getOpponentExp(poke){
+    const raw = poke && poke.exp;
+    const n = Number(raw);
+    return Number.isFinite(n) && n > 0 ? n : 100;
+  }
+
+  function awardExperience(expGain){
+    const closed = safeParse(localStorage.getItem('closed_challenge_account')) || {};
+    const slot = closed['pokemon-1'] || {};
+    slot.currentLevel = Number(slot.currentLevel) || player.level || 1;
+    slot.currentExp = Number(slot.currentExp) || 0;
+
+    slot.currentExp += Number(expGain) || 0;
+
+    // aplica level-up enquanto houver EXP suficiente
+    let leveledUp = 0;
+    while(slot.currentExp >= (slot.currentLevel * 100)){
+      slot.currentExp -= (slot.currentLevel * 100);
+      slot.currentLevel += 1;
+      leveledUp += 1;
+    }
+
+    // reflete no estado do player e persiste
+    player.level = slot.currentLevel;
+    closed['pokemon-1'] = {
+      ...closed['pokemon-1'],
+      currentLevel: slot.currentLevel,
+      currentExp: slot.currentExp
+    };
+    localStorage.setItem('closed_challenge_account', JSON.stringify(closed));
+
+    return { newLevel: slot.currentLevel, currentExp: slot.currentExp, leveledUp };
   }
 
   /* ============== Funções pedidas ============== */
 
-  function checkItem(attacker, defender){
-    console.log(`poke ${attacker.base.name} tem item ${attacker.item ? attacker.item.name : 'Nenhum'}; ` +
-                `poke ${defender.base.name} tem item ${defender.item ? defender.item.name : 'Nenhum'}`);
-  }
-
-  function calcDamage(attacker, defender, move){
-    const atk = Number(attacker.atk) || 0;
-    const def = Number(defender.def) || 0;
-    const power = Number(move?.power) || 0;
-    return (atk + power) - def;
-  }
-
-// ---- coloque essa função junto das outras (perto de performAttack/backToActionsSoon)
-
   function usePotion(){
     // vida cheia → não usa, volta pro menu principal imediatamente
     if(player.currentHp >= player.maxHp){
-      $('#battle-text').text('You are already at full health!');
-      toggleMenus('actions'); // garante que volta pro menu principal
+      $('#battle-text').text('vida já está cheia');
+      toggleMenus('actions');
       return;
     }
 
@@ -288,13 +338,13 @@ $(function(){
     setHp($('#player-hp'), toPct(player.currentHp, player.maxHp));
     $('#battle-text').text(`${player.base.name} usou uma Potion! +${healed} HP.`);
 
-    // consumir turno: oculta menus enquanto o oponente age
+    // consumir turno: esconde menus enquanto o oponente age
     toggleMenus(); // esconde todos
 
     // depois do delay, oponente ataca (se ainda estiver vivo)
     setTimeout(()=>{
       if(isFainted(opponent)){
-        backToActionsSoon();
+        handleOpponentFainted();
         return;
       }
       const oMv = pickRandomMove(opponent.moveset);
@@ -307,7 +357,17 @@ $(function(){
     }, MSG_DELAY_MS);
   }
 
+  function checkItem(attacker, defender){
+    console.log(`poke ${attacker.base.name} tem item ${attacker.item ? attacker.item.name : 'Nenhum'}; ` +
+                `poke ${defender.base.name} tem item ${defender.item ? defender.item.name : 'Nenhum'}`);
+  }
 
+  function calcDamage(attacker, defender, move){
+    const atk = Number(attacker.atk) || 0;
+    const def = Number(defender.def) || 0;
+    const power = Number(move?.power) || 0;
+    return (atk + power) - def;
+  }
 
   /* ============== Utils ============== */
 
@@ -317,7 +377,6 @@ $(function(){
     const pokeball = Number(raw.pokeball ?? raw.pokeballs ?? 0);
     const potion   = Number(raw.potion ?? 0);
     return { pokeball: isNaN(pokeball)?0:pokeball, potion: isNaN(potion)?0:potion };
-    // Se sua estrutura for diferente, me diga que ajusto o parser rapidinho.
   }
 
   function setHp($bar, pct){
