@@ -156,7 +156,7 @@
     playTransition(1500);
 
     setTimeout(() => {
-      window.location.href = '../../battle/battle.html';
+      window.location.href = '../../battle/battle-mobile.html';
     }, 1550);
   }
 

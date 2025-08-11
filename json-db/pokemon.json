@@ -1,4 +1,23 @@
 [
+    {
+      "id": 1,
+      "name": "Charmander",
+      "type": ["fire"],
+      "level": 5,
+      "evolveLevel": 16,
+      "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/4.png",
+      "description": "A fire lizard Pokémon that is known for its fiery tail.",
+      "region": "Kanto",
+      "startingMoves": [1],
+      "moves": [
+          {
+              "id": 1, "level": 5
+          },
+          {
+              "id": 2, "level": 7
+          }
+      ]
+  },
   {
     "id": 252,
     "name": "Treecko",
