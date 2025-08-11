@@ -1,7 +1,4 @@
 $(function(){
-  // (opcional) limpar battleData como você comentou:
-  // localStorage.removeItem('battleData');
-
   // ----- Storage -----
   const closedData = safeParse(localStorage.getItem('closed_challenge_account')) || {};
   const battleData = safeParse(localStorage.getItem('battleData')) || {};
@@ -11,11 +8,14 @@ $(function(){
   const MAX_HP = 500;
   const BASE_ATK = 100;
   const BASE_DEF = 100;
-  const MSG_DELAY_MS = 200; // tempo para mensagens de dano
+  const MSG_DELAY_MS = 200; // tempo para mensagens de dano/ação
 
   // ----- Estado -----
   let pokemons = [], items = [], moves = [];
-  let player = null, opponent = null;
+  let party = [];           // equipe do treinador (combatentes)
+  let activeIndex = 0;      // índice do pokémon ativo
+  let player = null;        // referência ao combatente ativo
+  let opponent = null;
 
   // ----- Carregar JSONs -----
   Promise.all([
@@ -27,7 +27,14 @@ $(function(){
     items = itemsList || [];
     moves = movesList || [];
 
-    player = buildPlayerFromClosed(closedData, pokemons, items, moves);
+    // Monta equipe do treinador a partir do closed_challenge_account
+    party = buildPartyFromClosed(closedData, pokemons, items, moves);
+    // ativo padrão = pokemon-1; se não houver, primeiro disponível
+    activeIndex = Math.max(0, party.findIndex(p => p.slotKey === 'pokemon-1'));
+    if(activeIndex === -1) activeIndex = 0;
+    player = party[activeIndex] || null;
+
+    // Monta oponente
     opponent = buildOpponentFromBattleData(battleData, pokemons, moves, player);
 
     if(!player || !player.base){
@@ -42,33 +49,53 @@ $(function(){
     renderHUDs();
     renderSprites();
     bindMenus();
-    updateBagMenuCounts(); // mostra as quantidades no menu da mochila
+    updateBagMenuCounts();
   }).catch(()=>{
     $('#battle-text').text('Erro ao carregar dados.');
   });
 
   /* ============== Builders ============== */
 
-  function buildPlayerFromClosed(closed, pokes, itemsList, movesList){
-    const slot = closed && closed['pokemon-1'];
-    const base = pokes.find(p => p.id === Number(slot?.idpoke)) || pokes[0] || null;
-    if(!base) return null;
+  function buildPartyFromClosed(closed, pokes, itemsList, movesList){
+    const keys = Object.keys(closed || {}).filter(k => /^pokemon-\d+$/.test(k)).sort((a,b)=>{
+      const na = Number(a.split('-')[1]); const nb = Number(b.split('-')[1]);
+      return na - nb;
+    });
+    if(keys.length === 0 && closed && closed['pokemon-1']) keys.push('pokemon-1');
 
-    const level = Number(slot?.currentLevel) || 5;
+    const itemGlobal = itemsList.find(i => i.id === Number(closed?.iditem)) || null;
 
-    // Moves do player
-    let myMoves = [];
-    const idsFromClosed = Array.isArray(slot?.moves) ? slot.moves.map(Number) : [];
-    if(idsFromClosed.length){
-      myMoves = idsFromClosed.map(id => movesList.find(m => m.id === id)).filter(Boolean);
-    }else{
-      myMoves = (base.moves || []).map(m => movesList.find(x => x.id === Number(m.id))).filter(Boolean);
+    const team = keys.map(k=>{
+      const slot = closed[k];
+      const base = pokes.find(p => p.id === Number(slot?.idpoke)) || pokes[0] || null;
+      if(!base) return null;
+
+      const level = Number(slot?.currentLevel) || 5;
+
+      let moveset = [];
+      const idsFromClosed = Array.isArray(slot?.moves) ? slot.moves.map(Number) : [];
+      if(idsFromClosed.length){
+        moveset = idsFromClosed.map(id => moves.find(m => m.id === id)).filter(Boolean);
+      }else{
+        moveset = (base.moves || []).map(m => moves.find(x => x.id === Number(m.id))).filter(Boolean);
+      }
+      if(moveset.length === 0 && moves.length) moveset = [moves[0]];
+
+      const c = makeCombatant(base, level, moveset, itemGlobal);
+      c.slotKey = k;
+      c.currentHp = MAX_HP; // HP começa cheio na batalha (persistir entre batalhas: salvar no storage)
+      return c;
+    }).filter(Boolean);
+
+    if(team.length === 0 && pokes.length){
+      const dummy = makeCombatant(pokes[0], 5,
+        (pokes[0].moves || []).map(m => moves.find(x=>x.id===Number(m.id))).filter(Boolean).slice(0,1),
+        null
+      );
+      dummy.slotKey = 'pokemon-1';
+      team.push(dummy);
     }
-    if(myMoves.length === 0 && movesList.length) myMoves = [movesList[0]];
-
-    const item = itemsList.find(i => i.id === Number(closed?.iditem)) || null;
-
-    return makeCombatant(base, level, myMoves, item);
+    return team;
   }
 
   function buildOpponentFromBattleData(battle, pokes, movesList, playerRef){
@@ -95,7 +122,8 @@ $(function(){
       atk: BASE_ATK,
       def: BASE_DEF,
       moveset: moveset.slice(0, 4),
-      item
+      item,
+      slotKey: null
     };
   }
 
@@ -128,35 +156,26 @@ $(function(){
     // Mochila → submenu de itens
     $('[data-action="bag"]').off('click').on('click', openBagMenu);
 
-    // Pokémon (placeholder)
-    $('[data-action="pokemon"]').off('click').on('click', ()=> $('#battle-text').text('Trocar de Pokémon (placeholder).'));
+    // Pokémon → modal de troca
+    $('[data-action="pokemon"]').off('click').on('click', openPartyModal);
 
     // Fugir → rota
-    $('[data-action="run"]').off('click').on('click', ()=>{
-      window.location.href = '../map/route/route-view.html';
-    });
+    $('[data-action="run"]').off('click').on('click', ()=> goToRoute() );
 
     // Voltar dos submenus
     $('#btn-back').off('click').on('click', backToActions);
     $('#btn-back-bag').off('click').on('click', backToActions);
 
-    // Ações de clique na mochila
+    // Mochila
     $('#btn-pokeball').off('click').on('click', ()=>{
       console.log(`Usar Poké Ball (x${bagInfo.pokeball}) — sem efeito por enquanto`);
       $('#battle-text').text(`Poké Ball (x${bagInfo.pokeball}) — ainda sem efeito.`);
     });
-    $('#btn-potion').off('click').on('click', ()=>{
-      usePotion();
-    });
+    $('#btn-potion').off('click').on('click', ()=> usePotion() );
 
     // Pós-batalha
-    $('#btn-exit').off('click').on('click', ()=>{
-      window.location.href = '../map/route/route-view.html';
-    });
-    $('#btn-catch').off('click').on('click', ()=>{
-      // Por enquanto capturar sempre usa Poké Ball (1x)
-      attemptCapture('pokeball');
-    });
+    $('#btn-exit').off('click').on('click', ()=> goToRoute() );
+    $('#btn-catch').off('click').on('click', ()=> attemptCapture('pokeball') );
   }
 
   function openMovesMenu(){
@@ -197,16 +216,90 @@ $(function(){
   }
 
   function toggleMenus(which){
-    // esconde todos
-    $('#action-menu').addClass('d-none');
-    $('#moves-menu').addClass('d-none');
-    $('#bag-menu').addClass('d-none');
-    $('#post-battle-menu').addClass('d-none');
-
+    $('#action-menu, #moves-menu, #bag-menu, #post-battle-menu').addClass('d-none');
     if(which === 'moves') $('#moves-menu').removeClass('d-none');
     else if(which === 'bag') $('#bag-menu').removeClass('d-none');
     else if(which === 'post') $('#post-battle-menu').removeClass('d-none');
     else $('#action-menu').removeClass('d-none');
+  }
+
+  /* ============== Modal de Troca ============== */
+
+  function openPartyModal(){
+    renderPartyList();
+    const modal = new bootstrap.Modal(document.getElementById('partyModal'));
+    modal.show();
+  }
+
+  function renderPartyList(){
+    const $list = $('#party-list').empty();
+
+    party.forEach((c, idx)=>{
+      const isActive = idx === activeIndex;
+      const fainted = c.currentHp <= 0;
+
+      const hpPct = Math.round(toPct(c.currentHp, c.maxHp));
+      const item = $(`
+        <button type="button" class="list-group-item list-group-item-action d-flex align-items-center gap-2">
+          <img src="${c.base.image}" alt="${c.base.name}" width="48" height="48" style="image-rendering:pixelated"/>
+          <div class="flex-grow-1 text-start">
+            <div class="d-flex justify-content-between"><span>${c.base.name}</span><span>Lv ${c.level}</span></div>
+            <small>HP: ${c.currentHp}/${c.maxHp} (${hpPct}%)</small>
+          </div>
+        </button>
+      `);
+
+      if(isActive){
+        item.addClass('active').append('<span class="badge bg-dark ms-2">Ativo</span>');
+      }
+      if(fainted){
+        item.addClass('disabled').append('<span class="badge bg-danger ms-2">Desmaiado</span>');
+      }
+
+      item.on('click', ()=>{
+        if(isActive || fainted) return; // não troca
+        changePokemon(idx); // troca consome turno (oponente pode bater)
+        const modalEl = document.getElementById('partyModal');
+        const mdl = bootstrap.Modal.getInstance(modalEl);
+        mdl?.hide();
+      });
+
+      $list.append(item);
+    });
+  }
+
+  // Troca o pokémon ativo, preservando o HP do que sai
+  function changePokemon(newIndex){
+    activeIndex = newIndex;
+    player = party[activeIndex];
+
+    // Atualiza HUD/sprite
+    renderHUDs();
+    $('#player-sprite')
+      .removeClass('show')
+      .one('transitionend', ()=>{
+        $('#player-sprite').attr('src', player.base.image || '').addClass('show');
+      });
+
+    // Mensagem e consumo do turno
+    $('#battle-text').text(`Vai, ${player.base.name}!`);
+    toggleMenus(); // esconde menus durante a ação
+
+    // Oponente ataca após a troca (se estiver vivo)
+    setTimeout(()=>{
+      if(isFainted(opponent)){
+        handleOpponentFainted();
+        return;
+      }
+      const oMv = pickRandomMove(opponent.moveset);
+      performAttack(opponent, player, oMv, '#player-hp', ()=>{
+        if(isFainted(player)){
+          handlePlayerFainted();
+          return;
+        }
+        backToActionsSoon();
+      });
+    }, MSG_DELAY_MS);
   }
 
   /* ============== Turnos / Combate ============== */
@@ -215,17 +308,16 @@ $(function(){
     const move = player.moveset[index];
     if(!move) return;
 
-    // Player ataca primeiro
     performAttack(player, opponent, move, '#opponent-hp', ()=>{
       if(isFainted(opponent)){
         handleOpponentFainted();
         return;
       }
-      // Oponente responde
       const oMv = pickRandomMove(opponent.moveset);
       performAttack(opponent, player, oMv, '#player-hp', ()=>{
         if(isFainted(player)){
-          $('#battle-text').text(`${player.base.name} desmaiou!`);
+          handlePlayerFainted();
+          return;
         }
         backToActionsSoon();
       });
@@ -238,7 +330,6 @@ $(function(){
     defender.currentHp = Math.max(0, defender.currentHp - dmg);
     setHp($(hpSelector), toPct(defender.currentHp, defender.maxHp));
     $('#battle-text').text(`${attacker.base.name} usou ${move?.name || 'ataque'}! Dano: ${dmg}`);
-
     setTimeout(()=> done && done(), MSG_DELAY_MS);
   }
 
@@ -249,20 +340,16 @@ $(function(){
   }
 
   function backToActionsSoon(){
-    setTimeout(()=>{
-      toggleMenus('actions');
-    }, 200);
+    setTimeout(()=>{ toggleMenus('actions'); }, 200);
   }
 
   /* ============== Pós-batalha / EXP ============== */
 
   function handleOpponentFainted(){
-    // calcula EXP do oponente (se não houver no json, usa 100)
     const expGain = getOpponentExp(opponent.base);
-    const result = awardExperience(expGain); // persiste e atualiza player.level/exp
-    renderHUDs(); // atualiza HUD de nível, se mudou
+    const result = awardExperienceToActive(expGain);
+    renderHUDs();
 
-    // mensagem de ganho de exp e possíveis level ups
     if(result.leveledUp > 0){
       $('#battle-text').text(
         `${opponent.base.name} desmaiou! +${expGain} EXP. Level up x${result.leveledUp} → Lv ${result.newLevel} (EXP atual: ${result.currentExp}).`
@@ -272,26 +359,24 @@ $(function(){
         `${opponent.base.name} desmaiou! +${expGain} EXP. EXP atual: ${result.currentExp}/${player.level*100}.`
       );
     }
-
-    // mostra menu pós-batalha (Capturar / Sair)
     toggleMenus('post');
   }
 
   function getOpponentExp(poke){
-    const raw = poke && poke.exp;
-    const n = Number(raw);
+    const n = Number(poke && poke.exp);
     return Number.isFinite(n) && n > 0 ? n : 100;
   }
 
-  function awardExperience(expGain){
+  function awardExperienceToActive(expGain){
     const closed = safeParse(localStorage.getItem('closed_challenge_account')) || {};
-    const slot = closed['pokemon-1'] || {};
+    const key = player.slotKey || 'pokemon-1';
+    const slot = closed[key] || {};
+
     slot.currentLevel = Number(slot.currentLevel) || player.level || 1;
-    slot.currentExp = Number(slot.currentExp) || 0;
+    slot.currentExp   = Number(slot.currentExp)   || 0;
 
     slot.currentExp += Number(expGain) || 0;
 
-    // aplica level-up enquanto houver EXP suficiente
     let leveledUp = 0;
     while(slot.currentExp >= (slot.currentLevel * 100)){
       slot.currentExp -= (slot.currentLevel * 100);
@@ -299,13 +384,9 @@ $(function(){
       leveledUp += 1;
     }
 
-    // reflete no estado do player e persiste
     player.level = slot.currentLevel;
-    closed['pokemon-1'] = {
-      ...closed['pokemon-1'],
-      currentLevel: slot.currentLevel,
-      currentExp: slot.currentExp
-    };
+
+    closed[key] = { ...closed[key], currentLevel: slot.currentLevel, currentExp: slot.currentExp };
     localStorage.setItem('closed_challenge_account', JSON.stringify(closed));
 
     return { newLevel: slot.currentLevel, currentExp: slot.currentExp, leveledUp };
@@ -313,56 +394,37 @@ $(function(){
 
   /* ============== Captura ============== */
 
-  // ballType: 'pokeball' | 'greatball' | 'superball' | 'ultraball'
   function attemptCapture(ballType = 'pokeball'){
-    const multipliers = {
-      pokeball: 1,
-      greatball: 2,
-      superball: 3,
-      ultraball: 4
-    };
-
+    const multipliers = { pokeball: 1, greatball: 2, superball: 3, ultraball: 4 };
     const mult = multipliers[ballType] || 1;
 
-    // verificar estoque da ball (por enquanto só Poké Ball conta)
     if(ballType === 'pokeball' && bagInfo.pokeball <= 0){
       $('#battle-text').text('Você não tem Poké Balls!');
-      return; // permanece no menu pós-batalha
+      return;
     }
-
-    // consumir 1 ball
     if(ballType === 'pokeball'){
       bagInfo.pokeball = Math.max(0, (bagInfo.pokeball || 0) - 1);
       localStorage.setItem('bag_info', JSON.stringify(bagInfo));
-      updateBagMenuCounts(); // caso o jogador abra a mochila depois
+      updateBagMenuCounts();
     }
 
-    // calcula chance
-    const baseCatch = Number(opponent.base.catchRate) || 90; // 1 ~ 100, default 20
+    const baseCatch = Number(opponent.base.catchRate) || 20;
     const chance = Math.min(100, baseCatch * mult);
     const roll = Math.random() * 100;
-
     const success = roll < chance;
 
     if(success){
-      // mensagem
       $('#battle-text').text(`Incrível! ${opponent.base.name} foi capturado!`);
-
-      // salvar no closed_challenge_account como pokemon-N
       addCapturedPokemon(opponent.base, opponent.level);
-
-      // vai para a rota
       setTimeout(()=> goToRoute(), 900);
     }else{
       $('#battle-text').text(`Que pena! ${opponent.base.name} fugiu!`);
-      // sem mensagem extra, apenas sair para rota
       setTimeout(()=> goToRoute(), 900);
     }
   }
 
   function addCapturedPokemon(pokeBase, level){
     const closed = safeParse(localStorage.getItem('closed_challenge_account')) || {};
-    // descobrir próximo índice N
     let maxN = 0;
     Object.keys(closed).forEach(k=>{
       const m = /^pokemon-(\d+)$/.exec(k);
@@ -370,7 +432,6 @@ $(function(){
     });
     const nextKey = `pokemon-${maxN + 1}`;
 
-    // pegar um move básico do próprio pokemon.json (se existir)
     let moveIds = [];
     if(Array.isArray(pokeBase.moves) && pokeBase.moves.length){
       moveIds = [ Number(pokeBase.moves[0].id) ];
@@ -382,7 +443,6 @@ $(function(){
       moves: moveIds,
       currentExp: 0
     };
-
     localStorage.setItem('closed_challenge_account', JSON.stringify(closed));
   }
 
@@ -390,23 +450,19 @@ $(function(){
     window.location.href = '../map/route/route-view.html';
   }
 
-  /* ============== Funções pedidas ============== */
+  /* ============== Funções pedidas (itens / dano / faint) ============== */
 
   function usePotion(){
-    // vida cheia → não usa, volta pro menu principal imediatamente
     if(player.currentHp >= player.maxHp){
       $('#battle-text').text('vida já está cheia');
       toggleMenus('actions');
       return;
     }
-
-    // sem potions → só avisa (permanece na mochila)
     if(bagInfo.potion <= 0){
       $('#battle-text').text('Você não tem Potions!');
       return;
     }
 
-    // consome 1 potion e cura 20
     const before = player.currentHp;
     player.currentHp = Math.min(player.maxHp, player.currentHp + 20);
     const healed = player.currentHp - before;
@@ -418,10 +474,8 @@ $(function(){
     setHp($('#player-hp'), toPct(player.currentHp, player.maxHp));
     $('#battle-text').text(`${player.base.name} usou uma Potion! +${healed} HP.`);
 
-    // consumir turno: esconde menus enquanto o oponente age
-    toggleMenus(); // esconde todos
+    toggleMenus(); // esconde todos durante a ação
 
-    // depois do delay, oponente ataca (se ainda estiver vivo)
     setTimeout(()=>{
       if(isFainted(opponent)){
         handleOpponentFainted();
@@ -430,11 +484,32 @@ $(function(){
       const oMv = pickRandomMove(opponent.moveset);
       performAttack(opponent, player, oMv, '#player-hp', ()=>{
         if(isFainted(player)){
-          $('#battle-text').text(`${player.base.name} desmaiou!`);
+          handlePlayerFainted();
+          return;
         }
         backToActionsSoon();
       });
     }, MSG_DELAY_MS);
+  }
+
+  // Se o player desmaiar, tenta trocar; se ninguém disponível, vai para rota
+  function handlePlayerFainted(){
+    $('#battle-text').text(`${player.base.name} desmaiou!`);
+    const nextIdx = findFirstAliveIndex();
+    if(nextIdx === -1){
+      // todos desmaiados
+      setTimeout(()=> goToRoute(), 900);
+      return;
+    }
+    // abre modal para escolher (focando na UX de seleção)
+    setTimeout(()=> openPartyModal(), 600);
+  }
+
+  function findFirstAliveIndex(){
+    for(let i=0;i<party.length;i++){
+      if(party[i].currentHp > 0) return i;
+    }
+    return -1;
   }
 
   function checkItem(attacker, defender){
@@ -452,7 +527,6 @@ $(function(){
   /* ============== Utils ============== */
 
   function getBagInfo(){
-    // Esperado algo como: { "pokeball": 3, "potion": 2 }
     const raw = safeParse(localStorage.getItem('bag_info')) || {};
     const pokeball = Number(raw.pokeball ?? raw.pokeballs ?? 0);
     const potion   = Number(raw.potion ?? 0);
