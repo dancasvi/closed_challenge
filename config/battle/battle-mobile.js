@@ -8,7 +8,7 @@ $(function(){
   const bagInfo = getBagInfo(); // { pokeball: number, potion: number }
 
   // ----- Regras -----
-  const MAX_HP = 100;
+  const MAX_HP = 500;
   const BASE_ATK = 100;
   const BASE_DEF = 100;
   const MSG_DELAY_MS = 200; // tempo para mensagens de dano
@@ -154,7 +154,8 @@ $(function(){
       window.location.href = '../map/route/route-view.html';
     });
     $('#btn-catch').off('click').on('click', ()=>{
-      $('#battle-text').text('Capturar: em breve 😉');
+      // Por enquanto capturar sempre usa Poké Ball (1x)
+      attemptCapture('pokeball');
     });
   }
 
@@ -308,6 +309,85 @@ $(function(){
     localStorage.setItem('closed_challenge_account', JSON.stringify(closed));
 
     return { newLevel: slot.currentLevel, currentExp: slot.currentExp, leveledUp };
+  }
+
+  /* ============== Captura ============== */
+
+  // ballType: 'pokeball' | 'greatball' | 'superball' | 'ultraball'
+  function attemptCapture(ballType = 'pokeball'){
+    const multipliers = {
+      pokeball: 1,
+      greatball: 2,
+      superball: 3,
+      ultraball: 4
+    };
+
+    const mult = multipliers[ballType] || 1;
+
+    // verificar estoque da ball (por enquanto só Poké Ball conta)
+    if(ballType === 'pokeball' && bagInfo.pokeball <= 0){
+      $('#battle-text').text('Você não tem Poké Balls!');
+      return; // permanece no menu pós-batalha
+    }
+
+    // consumir 1 ball
+    if(ballType === 'pokeball'){
+      bagInfo.pokeball = Math.max(0, (bagInfo.pokeball || 0) - 1);
+      localStorage.setItem('bag_info', JSON.stringify(bagInfo));
+      updateBagMenuCounts(); // caso o jogador abra a mochila depois
+    }
+
+    // calcula chance
+    const baseCatch = Number(opponent.base.catchRate) || 90; // 1 ~ 100, default 20
+    const chance = Math.min(100, baseCatch * mult);
+    const roll = Math.random() * 100;
+
+    const success = roll < chance;
+
+    if(success){
+      // mensagem
+      $('#battle-text').text(`Incrível! ${opponent.base.name} foi capturado!`);
+
+      // salvar no closed_challenge_account como pokemon-N
+      addCapturedPokemon(opponent.base, opponent.level);
+
+      // vai para a rota
+      setTimeout(()=> goToRoute(), 900);
+    }else{
+      $('#battle-text').text(`Que pena! ${opponent.base.name} fugiu!`);
+      // sem mensagem extra, apenas sair para rota
+      setTimeout(()=> goToRoute(), 900);
+    }
+  }
+
+  function addCapturedPokemon(pokeBase, level){
+    const closed = safeParse(localStorage.getItem('closed_challenge_account')) || {};
+    // descobrir próximo índice N
+    let maxN = 0;
+    Object.keys(closed).forEach(k=>{
+      const m = /^pokemon-(\d+)$/.exec(k);
+      if(m) maxN = Math.max(maxN, Number(m[1]));
+    });
+    const nextKey = `pokemon-${maxN + 1}`;
+
+    // pegar um move básico do próprio pokemon.json (se existir)
+    let moveIds = [];
+    if(Array.isArray(pokeBase.moves) && pokeBase.moves.length){
+      moveIds = [ Number(pokeBase.moves[0].id) ];
+    }
+
+    closed[nextKey] = {
+      idpoke: pokeBase.id,
+      currentLevel: Number(level) || 5,
+      moves: moveIds,
+      currentExp: 0
+    };
+
+    localStorage.setItem('closed_challenge_account', JSON.stringify(closed));
+  }
+
+  function goToRoute(){
+    window.location.href = '../map/route/route-view.html';
   }
 
   /* ============== Funções pedidas ============== */
