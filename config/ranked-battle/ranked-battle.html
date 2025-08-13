@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ranked Battle – Torre</title>
+
+  <!-- Bootstrap CSS -->
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+    crossorigin="anonymous"
+  />
+
+  <!-- Seu CSS -->
+  <link rel="stylesheet" href="./ranked-battle.css" />
+</head>
+<body>
+  <div class="container py-4">
+    <header class="mb-4 text-center">
+      <h1 class="h3 mb-1">Ranked Battle Tower</h1>
+      <p class="text-muted mb-0">Defeat'em all and become the world champion!</p>
+      <small id="rankInfo" class="text-secondary d-block mt-1"></small>
+    </header>
+
+    <div id="tower" class="tower position-relative">
+      <!-- os cards serão inseridos via JS -->
+    </div>
+  </div>
+
+  <!-- Modal genérico para treinadores -->
+    <div class="modal fade" id="trainerModal" tabindex="-1" aria-labelledby="trainerModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h1 class="modal-title fs-5" id="trainerModalLabel">Trainer</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <!-- preenchido via JS -->
+        </div>
+        <div class="modal-footer">
+            <!-- botões preenchidos via JS -->
+        </div>
+        </div>
+    </div>
+    </div>
+
+
+  <!-- jQuery -->
+  <script
+    src="https://code.jquery.com/jquery-3.7.1.min.js"
+    integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+    crossorigin="anonymous"></script>
+
+  <!-- Bootstrap JS (opcional, para tooltips, etc.) -->
+  <script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+    crossorigin="anonymous"></script>
+
+  <!-- Seu JS -->
+  <script src="./ranked-battle.js"></script>
+</body>
+</html>

@@ -15,12 +15,137 @@
 
   <!-- Logo -->
   <div class="text-center my-3">
-    <img src="https://via.placeholder.com/150x80?text=LOGO" alt="Logo" class="img-fluid logo">
+    <svg width="140" height="140" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+      <title id="title">Pokébola com brilho dourado animado</title>
+      <desc id="desc">Pokébola com um brilho dourado diagonal passando continuamente sobre ela, fundo transparente.</desc>
+
+      <!-- Definições -->
+      <defs>
+        <!-- Contorno da bola para clip -->
+        <clipPath id="clipBall">
+          <circle cx="100" cy="100" r="90"/>
+        </clipPath>
+
+        <!-- Sombra suave da bola -->
+        <radialGradient id="shade" cx="50%" cy="40%">
+          <stop offset="0%"  stop-color="#ffffff" stop-opacity="0.08"/>
+          <stop offset="70%" stop-color="#000000" stop-opacity="0.0"/>
+          <stop offset="100%" stop-color="#000000" stop-opacity="0.15"/>
+        </radialGradient>
+
+        <!-- Gradiente do brilho dourado -->
+        <linearGradient id="shineGrad" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%"   stop-color="gold" stop-opacity="0"/>
+          <stop offset="45%"  stop-color="gold" stop-opacity="0.8"/>
+          <stop offset="55%"  stop-color="gold" stop-opacity="0.8"/>
+          <stop offset="100%" stop-color="gold" stop-opacity="0"/>
+        </linearGradient>
+
+        <!-- Leve brilho especular fixo -->
+        <radialGradient id="spec" cx="30%" cy="25%">
+          <stop offset="0%"  stop-color="white" stop-opacity="0.45"/>
+          <stop offset="100%" stop-color="white" stop-opacity="0"/>
+        </radialGradient>
+      </defs>
+
+      <!-- Grupo da Pokébola -->
+      <g id="ball">
+        <!-- Corpo -->
+        <circle cx="100" cy="100" r="90" fill="url(#shade)"/>
+        <!-- Metade superior -->
+        <path d="M10,100 A90,90 0 0,1 190,100 L10,100Z" fill="#e63b35"/>
+        <!-- Metade inferior -->
+        <path d="M10,100 A90,90 0 0,0 190,100 L10,100Z" fill="#ffffff"/>
+
+        <!-- Faixa central preta -->
+        <rect x="10" y="92" width="180" height="16" rx="8" fill="#111"/>
+
+        <!-- Botão central -->
+        <circle cx="100" cy="100" r="26" fill="#1c1c1c"/>
+        <circle cx="100" cy="100" r="20" fill="#ffffff"/>
+        <circle cx="100" cy="100" r="10" fill="#d9d9d9"/>
+        <circle cx="97" cy="97" r="4" fill="white" opacity="0.9"/>
+
+        <!-- Brilho especular fixo -->
+        <ellipse cx="65" cy="58" rx="26" ry="16" fill="url(#spec)"/>
+      </g>
+
+      <!-- Brilho móvel (clippado à bola) -->
+      <g clip-path="url(#clipBall)">
+        <!-- Retângulo largo com gradiente que atravessa a área -->
+        <rect id="shine" x="-300" y="0" width="300" height="200"
+              fill="url(#shineGrad)"
+              transform="rotate(-25 100 100)">
+          <animate attributeName="x" from="-300" to="300" dur="2.4s" repeatCount="indefinite"/>
+        </rect>
+      </g>
+
+      <!-- Contorno da bola -->
+      <circle cx="100" cy="100" r="90" fill="none" stroke="#111" stroke-width="6"/>
+    </svg>
+
+    <!-- Espaço opcional -->
+    <div style="margin-top: -25px;"></div>
+
+    <svg width="300" height="120" viewBox="0 0 800 300" xmlns="http://www.w3.org/2000/svg">
+        <style>
+          .stamp {
+            font-family: "Impact", "Montserrat Alternates", "Poppins", "Arial Black", system-ui, sans-serif;
+            font-size: 110px;
+            font-weight: 900;
+            letter-spacing: 1px;
+            fill: #FFD700;
+            stroke: #1976D2;
+            stroke-width: 10px;
+            paint-order: stroke fill;
+            stroke-linejoin: round;
+            text-anchor: middle;
+            dominant-baseline: middle;
+          }
+          .shadow {
+            filter: drop-shadow(0 6px 0 rgba(0,0,0,0.5));
+          }
+        </style>
+
+        <defs>
+          <filter id="impact">
+            <feGaussianBlur stdDeviation="6">
+              <animate attributeName="stdDeviation" values="6;1.2;0" keyTimes="0;0.7;1" dur="0.45s" fill="freeze"/>
+            </feGaussianBlur>
+          </filter>
+        </defs>
+
+        <g transform="translate(400,110) scale(0.6)">
+          <g>
+            <animateTransform attributeName="transform" type="rotate" values="-6;2;0" keyTimes="0;0.65;1" dur="0.45s" fill="freeze"/>
+            <g>
+              <animateTransform attributeName="transform" type="scale" values="0.82;1.06;1" keyTimes="0;0.7;1" dur="0.45s" fill="freeze"/>
+              <text class="stamp shadow" filter="url(#impact)" opacity="0">closed
+                <animate attributeName="opacity" values="0;1" dur="0.08s" begin="0s" fill="freeze"/>
+              </text>
+            </g>
+          </g>
+        </g>
+
+        <g transform="translate(400,220) scale(0.6)">
+          <g>
+            <animateTransform attributeName="transform" type="rotate" values="5;-2;0" keyTimes="0;0.65;1" dur="0.45s" begin="0.20s" fill="freeze"/>
+            <g>
+              <animateTransform attributeName="transform" type="scale" values="0.82;1.06;1" keyTimes="0;0.7;1" dur="0.45s" begin="0.20s" fill="freeze"/>
+              <text class="stamp shadow" filter="url(#impact)" opacity="0">challenge
+                <animate attributeName="opacity" values="0;1" dur="0.08s" begin="0.20s" fill="freeze"/>
+              </text>
+            </g>
+          </g>
+        </g>
+    </svg>
+
   </div>
 
   <!-- Menu -->
   <div class="container text-center">
     <div class="menu-btn btn" data-page="begin-journey">Begin Journey</div>
+    <div class="menu-btn btn" data-page="ranked-battle">Ranked Battles</div>
     <div class="menu-btn btn" data-page="store">Store</div>
     <div class="menu-btn btn" data-page="gacha">GACHA</div>
     <div class="menu-btn btn" data-modal="tutorial">Tutorial</div>

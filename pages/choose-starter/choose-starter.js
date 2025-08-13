@@ -97,6 +97,7 @@ $(document).ready(function () {
             };
 
             localStorage.setItem('closed_challenge_account', JSON.stringify(accountData));
+            localStorage.setItem('current_rank', 1);
 
             // Fecha modal de item
             const itemModal = bootstrap.Modal.getInstance(document.getElementById('itemModal'));

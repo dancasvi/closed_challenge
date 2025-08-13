@@ -5,16 +5,28 @@ $(document).ready(function () {
 
     if (page) {
       // Redireciona para pages/<page>/<page>.html
-      debugger;
       if(page == "begin-journey") {
-        if(checkIfHaveAccount()) {
-          window.location.href = `pages/${page}/${page}.html`;
-        } else {
-          window.location.href = `pages/choose-starter/choose-starter.html`;
-        }
+        
       } else {
-        window.location.href = `pages/${page}/${page}.html`;
+        
       }
+
+      switch (page) {
+        case 'begin-journey':
+          if(checkIfHaveAccount()) {
+            window.location.href = `pages/${page}/${page}.html`;
+          } else {
+            window.location.href = `pages/choose-starter/choose-starter.html`;
+          }
+        break;
+        case 'ranked-battle':
+          window.location.href = `config/ranked-battle/ranked-battle.html`;
+        break;
+        default:
+          window.location.href = `pages/${page}/${page}.html`;
+        break
+      }
+
     } else if (modal) {
       openModal(modal);
     }
@@ -64,11 +76,46 @@ function checkIfHaveAccount() {
 
   // Lê o número do localStorage e atualiza a HUD
   global.updateWildDefeatsHUD = function() {
-    var el = document.getElementById('defeats-count');
-    if (!el) return; // HUD não existe nesta página
-    var n = parseInt(localStorage.getItem('wildDefeats') || '0', 10);
-    if (isNaN(n) || n < 0) n = 0;
-    el.textContent = n;
+    var countEl = document.getElementById('defeats-count');
+    if (!countEl) return; // HUD não existe nesta página
+
+    var n = global.getWildDefeats();
+    countEl.textContent = n;
+
+    // Procura um contêiner bom para anexar o botão
+    var hud = document.getElementById('battle-hud');
+    var parent = countEl.closest('.hud-card') || hud || countEl.parentElement;
+    if (!parent) return;
+
+    var btn = document.getElementById('ranked-btn');
+
+    if (n >= 10) {
+      // Cria o botão se ainda não existir
+      if (!btn) {
+        btn = document.createElement('button');
+        btn.id = 'ranked-btn';
+        btn.type = 'button';
+        btn.className = 'btn btn-primary btn-sm ms-3'; // usa Bootstrap se disponível
+        btn.textContent = 'Ranked Battle';
+        btn.setAttribute('aria-label', 'Ranked Battle');
+        btn.addEventListener('click', function () {
+          // Chama a função global
+          if (typeof global.goToRankedBattle === 'function') {
+            global.goToRankedBattle();
+          }
+        });
+        parent.appendChild(btn);
+      } else {
+        // Garante que esteja visível caso já exista
+        btn.style.display = '';
+      }
+    } else {
+      // Se não atingiu 10, esconde/remove o botão
+      if (btn) {
+        // pode remover ou apenas esconder — aqui vamos remover para evitar duplicatas
+        btn.remove();
+      }
+    }
   };
 
   // Incrementa o número de defeats em +1 e atualiza HUD
@@ -86,6 +133,11 @@ function checkIfHaveAccount() {
     if (isNaN(n) || n < 0) n = 0;
     return n;
   };
+
+  global.goToRankedBattle = function() {
+    console.log('Ir para Ranked Battle');
+  };
+
 
 })(window);
 

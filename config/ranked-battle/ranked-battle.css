@@ -1,0 +1,221 @@
+/* ===========================
+   RANKED BATTLE – ESTILOS
+   =========================== */
+
+/* Container da torre com um “eixo” central */
+.tower {
+  max-width: 520px;
+  margin: 0 auto;
+  padding: 12px 0 24px;
+  position: relative;
+}
+
+.tower::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: 4px;
+  height: 100%;
+  transform: translateX(-50%);
+  background: linear-gradient(180deg, rgba(0,0,0,0.1), rgba(0,0,0,0.15));
+  border-radius: 2px;
+}
+
+/* “Degrau” da torre (card do treinador) */
+.trainer-step {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  margin: 14px 0;
+  background: #ffffff; /* base (sobrescrita pelas categorias) */
+  border: 1px solid rgba(0,0,0,0.08);
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,.05);
+  transition: transform .08s ease, box-shadow .08s ease, border-color .08s ease;
+  cursor: pointer;
+}
+
+.trainer-step:active {
+  transform: translateY(1px);
+}
+
+/* Rank à esquerda */
+.trainer-step .rank-badge {
+  min-width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-weight: 700;
+  border: 2px solid rgba(0,0,0,0.08);
+  background: #f7f7f7;
+}
+
+/* Imagem do treinador */
+.trainer-step .trainer-img-wrap {
+  width: 72px;
+  height: 72px;
+  flex: 0 0 72px;
+  border-radius: 8px;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  background: #fafafa;
+  border: 1px solid rgba(0,0,0,.06);
+}
+
+.trainer-step img {
+  max-width: 72px;
+  max-height: 72px;
+}
+
+/* Nome/Região/Infos */
+.trainer-meta {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.trainer-name {
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.trainer-region {
+  font-size: 0.8rem;
+  color: #6c757d;
+}
+
+/* Linha ligando ao eixo */
+.trainer-step::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: -14px;
+  transform: translateX(-50%);
+  width: 2px;
+  height: 14px;
+  background: rgba(0,0,0,0.1);
+}
+
+.trainer-step:first-child::before {
+  display: none;
+}
+
+/* Texto truncado quando necessário */
+.truncate {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ===========================
+   SILHUETA / ESTADOS
+   =========================== */
+
+/* Só FUTUROS ficam em silhueta (passados coloridos normalmente) */
+.silhouette {
+  filter: saturate(0.2);
+}
+.silhouette img {
+  filter: brightness(0) contrast(100%) !important;
+}
+
+/* Destaque para o atual */
+.current {
+  border-color: #0d6efd33;
+  box-shadow: 0 4px 14px rgba(13,110,253,.15);
+}
+.current .rank-badge {
+  border-color: #0d6efd55;
+  background: #e7f1ff;
+}
+
+/* ===========================
+   CATEGORIAS DE TREINADOR
+   (aplicadas via .cat-<category>)
+   =========================== */
+
+/* common: fundo branco com leve textura */
+.cat-common {
+  background:
+    radial-gradient(1200px 1200px at 100% -20%, rgba(0,0,0,.03), transparent 40%),
+    #ffffff;
+}
+
+/* gym_leader: fundo vermelho */
+.cat-gym_leader {
+  background:
+    linear-gradient(135deg, rgba(220,53,69,.08), transparent 40%),
+    #ffe9ec;
+  border-color: rgba(220,53,69,.25);
+}
+
+/* elite: fundo laranja */
+.cat-elite {
+  background:
+    linear-gradient(135deg, rgba(255,159,64,.12), transparent 40%),
+    #fff3e8;
+  border-color: rgba(255,159,64,.3);
+}
+
+/* champion: fundo azul */
+.cat-champion {
+  background:
+    linear-gradient(135deg, rgba(13,110,253,.10), transparent 40%),
+    #eaf2ff;
+  border-color: rgba(13,110,253,.28);
+}
+
+/* special: fundo “colorido” com gradiente suave */
+.cat-special {
+  background:
+    linear-gradient(135deg, rgba(255, 99, 132, .12), rgba(54, 162, 235, .12) 45%, rgba(255, 206, 86, .12)),
+    #faf7ff;
+  border-color: rgba(111, 66, 193, .25);
+}
+
+/* ===========================
+   POKÉBOLAS E GALERIA DO MODAL
+   =========================== */
+
+.pokeballs {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-top: 4px;
+}
+
+.pokeballs svg {
+  width: 18px;
+  height: 18px;
+  display: block;
+}
+
+/* Galeria de pokémon (modal dos já vencidos) */
+.pokemon-gallery {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+
+.pokemon-gallery .poke {
+  width: 54px;
+  height: 54px;
+  border-radius: 8px;
+  border: 1px solid rgba(0,0,0,.08);
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background: #fafafa;
+}
+
+.pokemon-gallery .poke img {
+  max-width: 54px;
+  max-height: 54px;
+}

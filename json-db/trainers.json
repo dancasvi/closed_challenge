@@ -1,7 +1,7 @@
 [
     {
         "id": 1,
-        "name": "Bug Catcher",
+        "name": "Bug Catcher Gari",
         "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/trainers/bug_catcher.png",
         "region": "Hoenn",
         "description": "A trainer who specializes in catching and training Bug-type Pokémon.",
@@ -16,11 +16,14 @@
                 "level": 6,
                 "moves": [5]
             }
-        ]
+        ],
+        "exp": 1000,
+        "rank": 1,
+        "category": "common"
     },
     {
         "id": 2,
-        "name": "Youngster",
+        "name": "Youngster Kelvin",
         "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/trainers/youngster.png",
         "region": "Kanto",
         "description": "A young trainer who is eager to prove his skills.",
@@ -30,6 +33,109 @@
                 "level": 8,
                 "moves": [1]
             }
-        ]
+        ],
+        "exp": 1000,
+        "rank": 2,
+        "category": "common"
+    },
+    {
+        "id": 3,
+        "name": "Roxanne",
+        "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/trainers/roxanne.png",
+        "region": "Hoenn", 
+        "description": "The Gym Leader of Rustboro City, specializing in Rock-type Pokémon.",
+        "pokemon": [
+            {
+                "id": 74,
+                "level": 15,
+                "moves": [1, 8]
+            },
+            {
+                "id": 299,
+                "level": 16,
+                "moves": [1, 9]
+            }
+        ],
+        "exp": 1000,
+        "rank": 3,
+        "category": "gym_leader"
+    },
+    {
+        "id": 4,
+        "name": "Black Belt Santhyago",
+        "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/trainers/black_belt.png",
+        "region": "Kanto",
+        "description": "A martial artist who trains Fighting-type Pokémon.",
+        "pokemon": [
+            {
+                "id": 66,
+                "level": 20,
+                "moves": [1, 2]
+            }
+        ],
+        "exp": 2000,
+        "rank": 4,
+        "category": "common"
+    },
+    {
+        "id": 5,
+        "name": "Calem",
+        "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/trainers/calem.png",
+        "region": "Kalos",
+        "description": "A skilled trainer from the Kalos region, known for his strategic battles.",
+        "pokemon": [
+            {
+                "id": 658,
+                "level": 30,
+                "moves": [1, 2, 3]
+            }
+        ],
+        "exp": 3000,
+        "rank": 5,
+        "category": "rival"
+    },
+    {
+        "id": 6,
+        "name": "Drake",
+        "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/trainers/drake.png",
+        "region": "Hoenn",
+        "description": "The Dragon-type Pokémon Master of the Hoenn region, known for his powerful team.",
+        "pokemon": [
+            {
+                "id": 330,
+                "level": 50,
+                "moves": [11, 12]
+            },
+            {
+                "id": 373,
+                "level": 52,
+                "moves": [10, 11]
+            }
+        ],
+        "exp": 5000,
+        "rank": 6,
+        "category": "elite"
+    },
+    {
+        "id": 7,
+        "name": "Steven",
+        "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/trainers/steven.png",
+        "region": "Hoenn",
+        "description": "The Champion of the Hoenn region, known for his Steel-type Pokémon and strategic prowess.",
+        "pokemon": [
+            {
+                "id": 306,
+                "level": 55,
+                "moves": [1, 9, 13]
+            },
+            {
+                "id": 376,
+                "level": 58,
+                "moves": [14, 15, 16]
+            }
+        ],
+        "exp": 10000,
+        "rank": 7,
+        "category": "champion"
     }
 ]

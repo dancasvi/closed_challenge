@@ -1,7 +1,6 @@
 $(document).ready(function() {
     // Initialize the page with any necessary setup
     console.log("Begin Journey page is ready.");
-    debugger;
     const accountInfo = getAccountInfo();
 
     if(accountInfo) {
