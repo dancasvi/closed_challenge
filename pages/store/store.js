@@ -136,7 +136,7 @@ function showModalAlert(type, msg) {
 function openBuyModal(item) {
   currentItem = item;
 
-  $("#buyModalLabel").text(`Comprar ${item.name}`);
+  $("#buyModalLabel").text(`Buy ${item.name}`);
   $("#modalItemDesc").text(item.description || "Sem descrição.");
   $("#modalItemImg").attr("src", resolveImageSrc(item)).attr("alt", item.name);
 
@@ -178,7 +178,7 @@ async function refreshItemsCache() {
     if (martItems.length === 0) {
       $("#alert-area").html(`
         <div class="alert alert-warning" role="alert">
-          Nenhum item disponível no Mart.
+          No available items on Mart.
         </div>
       `);
     }
@@ -221,7 +221,7 @@ $("#confirmBuyBtn").on("click", function () {
   if (cash.pokecoins < total) {
     showModalAlert(
       "danger",
-      `Saldo insuficiente. Você precisa de ${currencyCoin(total)} e possui ${currencyCoin(cash.pokecoins)}.`
+      `Insufficient funds. You need ${currencyCoin(total)} but have ${currencyCoin(cash.pokecoins)}.`
     );
     return;
   }
@@ -240,9 +240,9 @@ $("#confirmBuyBtn").on("click", function () {
   // 4) Feedback visual
   $("#alert-area").html(`
     <div class="alert alert-success alert-dismissible fade show mt-2" role="alert">
-      Você comprou <strong>${qty}× ${currentItem.name}</strong> por ${currencyCoin(total)}.
-      Saldo restante: <strong>${currencyCoin(cash.pokecoins)}</strong>.
-      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
+      You bought <strong>${qty}× ${currentItem.name}</strong> by ${currencyCoin(total)}.
+      Funds left: <strong>${currencyCoin(cash.pokecoins)}</strong>.
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
   `);
 

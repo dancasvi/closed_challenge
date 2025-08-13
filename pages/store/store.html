@@ -18,7 +18,7 @@
 <body>
   <header class="navbar navbar-expand-lg sticky-top bg-body border-bottom shadow-sm">
     <div class="container">
-      <a class="navbar-brand fw-bold" href="#">Pocket Mart</a>
+      <a class="navbar-brand fw-bold" href="#">Mart</a>
     </div>
   </header>
 
@@ -53,7 +53,7 @@
     <div id="alert-area"></div>
 
     <div class="d-flex align-items-center gap-2 mb-3">
-      <h1 class="h4 mb-0">Itens disponíveis</h1>
+      <h1 class="h4 mb-0">Available Items</h1>
       <span class="badge text-bg-secondary" id="count-badge" aria-label="Quantidade de itens">0</span>
     </div>
 
@@ -63,7 +63,7 @@
     <!-- Botão Voltar -->
     <div class="mt-4">
       <button type="button" class="btn btn-outline-secondary w-100" onclick="window.history.back()">
-        ← Voltar
+        ← Menu
       </button>
     </div>
   </main>
@@ -75,7 +75,7 @@
         <div class="modal-header">
           <div class="d-flex align-items-center gap-2">
             <img id="modalItemImg" src="" alt="" class="rounded" width="32" height="32" />
-            <h2 class="modal-title fs-5 mb-0" id="buyModalLabel">Comprar</h2>
+            <h2 class="modal-title fs-5 mb-0" id="buyModalLabel">Buy</h2>
           </div>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cancelar"></button>
         </div>
@@ -83,13 +83,13 @@
           <p class="mb-2 text-secondary" id="modalItemDesc"></p>
 
           <div class="d-flex justify-content-between align-items-center mb-1">
-            <label for="qtyRange" class="form-label mb-0">Quantidade</label>
+            <label for="qtyRange" class="form-label mb-0">Amount</label>
             <span class="badge text-bg-primary" id="qtyBadge">1</span>
           </div>
           <input type="range" class="form-range" id="qtyRange" min="1" max="99" step="1" value="1" />
 
           <div class="d-flex justify-content-between mt-3">
-            <span class="text-secondary">Preço unitário</span>
+            <span class="text-secondary">Unit Price</span>
             <strong id="unitPrice">—</strong>
           </div>
           <div class="d-flex justify-content-between">

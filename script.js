@@ -34,6 +34,8 @@ $(document).ready(function () {
     localStorage.removeItem('closed_challenge_account');
     localStorage.removeItem('current_rank');
     localStorage.removeItem('wildDefeats');
+    localStorage.removeItem('bag_info');
+    localStorage.removeItem('current_cash');
   }
 });
 
