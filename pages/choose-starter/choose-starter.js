@@ -112,7 +112,7 @@ $(document).ready(function () {
             if (itemModal) itemModal.hide();
 
             // Mostra modal final de sucesso
-            $("#successMessage").text(`Parabéns! Você recebeu um ${chosenPokemon.name} (Lv ${chosenPokemon.level})`);
+            $("#successMessage").text(`Congratulations! You received ${chosenPokemon.name} (Lv ${chosenPokemon.level})`);
             const successModal = new bootstrap.Modal(document.getElementById('successModal'));
             successModal.show();
         });
