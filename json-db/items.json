@@ -1,0 +1,26 @@
+[
+    {
+        "id": 1,
+        "name": "Potion",
+        "price": 10,
+        "mart": true,
+        "description": "Used to restore 20 hp",
+        "image": "potion.png"
+    },
+    {
+        "id": 2,
+        "name": "Pokeball",
+        "price": 10,
+        "mart": true,
+        "description": "Used to catch wild Pokémon",
+        "image": "pokeball.png"
+    },
+    {
+        "id": 3,
+        "name": "Closed Ticket",
+        "price": 0,
+        "mart": true,
+        "description": "Used to pull GACHA",
+        "image": "closed-ticket.png"
+    }
+]

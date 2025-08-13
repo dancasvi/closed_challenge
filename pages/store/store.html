@@ -1,1 +1,121 @@
-cachorrin
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Pocket Mart</title>
+
+  <!-- Bootstrap CSS -->
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+    crossorigin="anonymous"
+  />
+
+  <!-- App CSS -->
+  <link rel="stylesheet" href="./store.css" />
+</head>
+<body>
+  <header class="navbar navbar-expand-lg sticky-top bg-body border-bottom shadow-sm">
+    <div class="container">
+      <a class="navbar-brand fw-bold" href="#">Pocket Mart</a>
+    </div>
+  </header>
+
+  <main class="container py-3">
+    <!-- HUD -->
+    <section aria-label="HUD do jogador" class="hud mb-3">
+      <div class="hud-item" title="Pokecoins">
+        <img src="../../assets/items/pokecoin.png" alt="pokecoin" class="hud-icon" />
+        <span class="hud-x">×</span>
+        <strong id="hudPokecoins">0</strong>
+      </div>
+
+      <div class="hud-item" title="Closed Tickets">
+        <img src="../../assets/items/closed-ticket.png" onerror="this.src='../../assets/items/pokeball.png'" alt="closed-tickets" class="hud-icon" />
+        <span class="hud-x">×</span>
+        <strong id="hudClosedTickets">0</strong>
+      </div>
+
+      <div class="hud-item" title="Pokeballs">
+        <img src="../../assets/items/pokeball.png" alt="pokeball" class="hud-icon" />
+        <span class="hud-x">×</span>
+        <strong id="hudPokeball">0</strong>
+      </div>
+
+      <div class="hud-item" title="Potions">
+        <img src="../../assets/items/potion.png" alt="potion" class="hud-icon" />
+        <span class="hud-x">×</span>
+        <strong id="hudPotion">0</strong>
+      </div>
+    </section>
+
+    <div id="alert-area"></div>
+
+    <div class="d-flex align-items-center gap-2 mb-3">
+      <h1 class="h4 mb-0">Itens disponíveis</h1>
+      <span class="badge text-bg-secondary" id="count-badge" aria-label="Quantidade de itens">0</span>
+    </div>
+
+    <!-- Grade dos cards -->
+    <div id="items-grid" class="row g-3" role="list"></div>
+
+    <!-- Botão Voltar -->
+    <div class="mt-4">
+      <button type="button" class="btn btn-outline-secondary w-100" onclick="window.history.back()">
+        ← Voltar
+      </button>
+    </div>
+  </main>
+
+  <!-- Modal de compra -->
+  <div class="modal fade" id="buyModal" tabindex="-1" aria-labelledby="buyModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <div class="d-flex align-items-center gap-2">
+            <img id="modalItemImg" src="" alt="" class="rounded" width="32" height="32" />
+            <h2 class="modal-title fs-5 mb-0" id="buyModalLabel">Comprar</h2>
+          </div>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cancelar"></button>
+        </div>
+        <div class="modal-body">
+          <p class="mb-2 text-secondary" id="modalItemDesc"></p>
+
+          <div class="d-flex justify-content-between align-items-center mb-1">
+            <label for="qtyRange" class="form-label mb-0">Quantidade</label>
+            <span class="badge text-bg-primary" id="qtyBadge">1</span>
+          </div>
+          <input type="range" class="form-range" id="qtyRange" min="1" max="99" step="1" value="1" />
+
+          <div class="d-flex justify-content-between mt-3">
+            <span class="text-secondary">Preço unitário</span>
+            <strong id="unitPrice">—</strong>
+          </div>
+          <div class="d-flex justify-content-between">
+            <span class="text-secondary">Total</span>
+            <strong id="totalPrice" class="fs-5">—</strong>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-primary" id="confirmBuyBtn">Ok</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- jQuery -->
+  <script
+    src="https://code.jquery.com/jquery-3.7.1.min.js"
+    crossorigin="anonymous"></script>
+
+  <!-- Bootstrap JS -->
+  <script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+    crossorigin="anonymous"></script>
+
+  <!-- App JS -->
+  <script src="./store.js"></script>
+</body>
+</html>

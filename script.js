@@ -5,12 +5,6 @@ $(document).ready(function () {
 
     if (page) {
       // Redireciona para pages/<page>/<page>.html
-      if(page == "begin-journey") {
-        
-      } else {
-        
-      }
-
       switch (page) {
         case 'begin-journey':
           if(checkIfHaveAccount()) {
@@ -22,6 +16,9 @@ $(document).ready(function () {
         case 'ranked-battle':
           window.location.href = `config/ranked-battle/ranked-battle.html`;
         break;
+        case 'reset':
+          resetGame();
+        break;
         default:
           window.location.href = `pages/${page}/${page}.html`;
         break
@@ -31,6 +28,13 @@ $(document).ready(function () {
       openModal(modal);
     }
   });
+
+  function resetGame() {
+    localStorage.removeItem('battleData');
+    localStorage.removeItem('closed_challenge_account');
+    localStorage.removeItem('current_rank');
+    localStorage.removeItem('wildDefeats');
+  }
 });
 
 function openModal(type) {
@@ -39,10 +43,7 @@ function openModal(type) {
 
   if (type === 'tutorial') {
     title = 'Tutorial';
-    content = 'Aqui vai o conteúdo do tutorial.';
-  } else if (type === 'credits') {
-    title = 'Credits';
-    content = 'Desenvolvido por você.';
+    content = 'In Closed Challenge, you must defeat and capture wild Pokémon in order to take down increasingly powerful trainers!';
   }
 
   $('#infoModalLabel').text(title);

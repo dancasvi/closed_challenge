@@ -1,0 +1,106 @@
+/* Mobile-first: espaçamentos suaves e cards fluidos */
+:root {
+  --shadow-soft: 0 2px 10px rgba(0, 0, 0, 0.06);
+}
+
+body {
+  background: #f8f9fa;
+}
+
+.card {
+  box-shadow: var(--shadow-soft);
+  border: 1px solid rgba(0,0,0,.05);
+  transition: transform .12s ease, box-shadow .12s ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+}
+
+.card-img-top {
+  object-fit: contain;
+  background: #fff;
+  padding: .75rem;
+  height: 120px; /* altura uniforme para o grid */
+}
+
+.price {
+  font-weight: 700;
+}
+
+.badge {
+  user-select: none;
+}
+
+/* Ícones */
+.coin-icon {
+  width: 16px;
+  height: 16px;
+  vertical-align: middle;
+  margin-left: 2px;
+  margin-top: -2px;
+}
+
+.hud-icon {
+  width: 18px;
+  height: 18px;
+  vertical-align: middle;
+}
+
+/* HUD */
+.hud {
+  display: flex;
+  gap: .75rem;
+  flex-wrap: wrap;
+  padding: .5rem .75rem;
+  background: #ffffff;
+  border: 1px solid rgba(0,0,0,.06);
+  border-radius: .75rem;
+  box-shadow: var(--shadow-soft);
+}
+
+.hud-item {
+  display: inline-flex;
+  align-items: center;
+  gap: .35rem;
+  font-weight: 600;
+  background: #f8f9fa;
+  border-radius: 999px;
+  padding: .35rem .6rem;
+}
+
+.hud-x {
+  opacity: .65;
+}
+
+/* Grid responsivo dos cards */
+#items-grid > .col {
+  display: flex;
+}
+
+#items-grid .card {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+#items-grid .card-body {
+  display: flex;
+  flex-direction: column;
+}
+
+#items-grid .card-body .mt-auto {
+  margin-top: auto;
+}
+
+/* Modal */
+#qtyRange {
+  touch-action: pan-y;
+}
+
+@media (min-width: 576px) {
+  .card-img-top {
+    height: 140px;
+  }
+}

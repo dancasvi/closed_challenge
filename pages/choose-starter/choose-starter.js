@@ -99,6 +99,12 @@ $(document).ready(function () {
             localStorage.setItem('closed_challenge_account', JSON.stringify(accountData));
             localStorage.setItem('current_rank', 1);
 
+            const currentCash = {
+                "pokecoins": 1000,
+                "closed-tickets": 100
+            };
+            localStorage.setItem('current_cash', JSON.stringify(currentCash));
+
             // Fecha modal de item
             const itemModal = bootstrap.Modal.getInstance(document.getElementById('itemModal'));
             if (itemModal) itemModal.hide();

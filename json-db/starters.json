@@ -16,7 +16,8 @@
             {
                 "id": 2, "level": 7
             }
-        ]
+        ],
+        "active": false
     },
     {
         "id": 2,
@@ -35,7 +36,8 @@
             {
                 "id": 3, "level": 7
             }
-        ]
+        ],
+        "active": false
     },
     {
         "id": 3,
@@ -54,7 +56,8 @@
             {
                 "id": 4, "level": 7
             }
-        ]
+        ],
+        "active": false
     },
     {
         "id": 4,
