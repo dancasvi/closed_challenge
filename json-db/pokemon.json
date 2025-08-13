@@ -24,7 +24,8 @@
     "type": [
       "grass"
     ],
-    "evolveLevel": null,
+    "evolveLevel": 6,
+    "evolveTo": 253,
     "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/252.png",
     "description": "",
     "region": "Hoenn",
@@ -44,7 +45,8 @@
     "type": [
       "grass"
     ],
-    "evolveLevel": null,
+    "evolveLevel": 16,
+    "evolveTo": 254,
     "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/253.png",
     "description": "",
     "region": "Hoenn",
@@ -65,6 +67,7 @@
       "grass"
     ],
     "evolveLevel": null,
+    "evolveTo": null,
     "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/254.png",
     "description": "",
     "region": "Hoenn",
@@ -84,7 +87,8 @@
     "type": [
       "fire"
     ],
-    "evolveLevel": null,
+    "evolveLevel": 6,
+    "evolveTo": 256,
     "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/255.png",
     "description": "",
     "region": "Hoenn",
@@ -105,7 +109,8 @@
       "fire",
       "fighting"
     ],
-    "evolveLevel": null,
+    "evolveLevel": 36,
+    "evolveTo": 257,
     "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/256.png",
     "description": "",
     "region": "Hoenn",
@@ -127,6 +132,7 @@
       "fighting"
     ],
     "evolveLevel": null,
+    "evolveTo": null,
     "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/257.png",
     "description": "",
     "region": "Hoenn",
@@ -146,7 +152,8 @@
     "type": [
       "water"
     ],
-    "evolveLevel": null,
+    "evolveLevel": 6,
+    "evolveTo": 259,
     "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/258.png",
     "description": "",
     "region": "Hoenn",
@@ -167,7 +174,8 @@
       "water",
       "ground"
     ],
-    "evolveLevel": null,
+    "evolveLevel": 36,
+    "evolveTo": 260,
     "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/259.png",
     "description": "",
     "region": "Hoenn",
@@ -189,6 +197,7 @@
       "ground"
     ],
     "evolveLevel": null,
+    "evolveTo": null,
     "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/260.png",
     "description": "",
     "region": "Hoenn",

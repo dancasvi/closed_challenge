@@ -60,11 +60,12 @@
         "active": false
     },
     {
-        "id": 4,
+        "id": 255,
         "name": "Torchic",
         "type": "Fire",
         "level": 5,
-        "evolveLevel": 16,
+        "evolveLevel": 6,
+        "evolveTo": 256,
         "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/255.png",
         "description": "A chick Pokémon that is known for its fiery spirit.",
         "region": "Hoenn",
@@ -80,11 +81,12 @@
         "active": true
     },
     {
-        "id": 5,
+        "id": 258,
         "name": "Mudkip",
         "type": "Water",
         "level": 5,
-        "evolveLevel": 16,
+        "evolveLevel": 6,
+        "evolveTo": 259,
         "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/258.png",
         "description": "A mud fish Pokémon that can adapt to various environments.",
         "region": "Hoenn",
@@ -100,11 +102,12 @@
         "active": true
     },
     {
-        "id": 6,
+        "id": 252,
         "name": "Treecko",
         "type": "Grass",
         "level": 5,
-        "evolveLevel": 16,
+        "evolveLevel": 6,
+        "evolveTo": 253,
         "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/252.png",
         "description": "A lizard Pokémon that is known for its agility and speed.",
         "region": "Hoenn",

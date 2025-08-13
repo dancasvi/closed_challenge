@@ -367,30 +367,71 @@ $(function(){
     return Number.isFinite(n) && n > 0 ? n : 100;
   }
 
-  function awardExperienceToActive(expGain){
-    const closed = safeParse(localStorage.getItem('closed_challenge_account')) || {};
-    const key = player.slotKey || 'pokemon-1';
-    const slot = closed[key] || {};
+    function awardExperienceToActive(expGain){
+      const closed = safeParse(localStorage.getItem('closed_challenge_account')) || {};
+      const key = player.slotKey || 'pokemon-1';
+      const slot = closed[key] || {};
 
-    slot.currentLevel = Number(slot.currentLevel) || player.level || 1;
-    slot.currentExp   = Number(slot.currentExp)   || 0;
+      slot.currentLevel = Number(slot.currentLevel) || player.level || 1;
+      slot.currentExp   = Number(slot.currentExp)   || 0;
 
-    slot.currentExp += Number(expGain) || 0;
+      slot.currentExp += Number(expGain) || 0;
 
-    let leveledUp = 0;
-    while(slot.currentExp >= (slot.currentLevel * 100)){
-      slot.currentExp -= (slot.currentLevel * 100);
-      slot.currentLevel += 1;
-      leveledUp += 1;
-    }
+      let leveledUp = 0;
+      while(slot.currentExp >= (slot.currentLevel * 100)){
+        slot.currentExp -= (slot.currentLevel * 100);
+        slot.currentLevel += 1;
+        leveledUp += 1;
+      }
 
-    player.level = slot.currentLevel;
+      // Atualiza o nível do combatente ativo
+      player.level = slot.currentLevel;
 
-    closed[key] = { ...closed[key], currentLevel: slot.currentLevel, currentExp: slot.currentExp };
-    localStorage.setItem('closed_challenge_account', JSON.stringify(closed));
+      // ===== [NOVO] Verifica evolução =====
+      let evolved = false;
+      let evoFromName = null, evoToName = null;
+      const evoLevel = Number(player?.base?.evolveLevel);
+      const evoToId  = Number(player?.base?.evolveTo);
 
-    return { newLevel: slot.currentLevel, currentExp: slot.currentExp, leveledUp };
+      if (Number.isFinite(evoLevel) && evoLevel > 0 &&
+          Number.isFinite(evoToId)  && slot.currentLevel >= evoLevel) {
+
+        const newBase = pokemons.find(p => Number(p.id) === evoToId);
+        if (newBase) {
+          evoFromName = player.base.name;
+          evoToName   = newBase.name;
+
+          // Atualiza em memória
+          player.base = newBase; // mantém moveset/HP/itens já existentes
+
+          // Atualiza o storage do slot correspondente
+          closed[key] = {
+            ...closed[key],
+            idpoke: newBase.id,                    // <- troca o Pokémon
+            currentLevel: slot.currentLevel,
+            currentExp:   slot.currentExp
+          };
+          localStorage.setItem('closed_challenge_account', JSON.stringify(closed));
+          evolved = true;
+        }
+      }
+
+      // Se não evoluiu, ainda assim persiste level/exp
+      if (!evolved) {
+        closed[key] = { ...closed[key], currentLevel: slot.currentLevel, currentExp: slot.currentExp };
+        localStorage.setItem('closed_challenge_account', JSON.stringify(closed));
+      }
+
+      return {
+        newLevel: slot.currentLevel,
+        currentExp: slot.currentExp,
+        leveledUp,
+        evolved,
+        evoFromName,
+        evoToName
+      };
   }
+
 
   /* ============== Captura ============== */
 
