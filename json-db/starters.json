@@ -76,7 +76,8 @@
             {
                 "id": 2, "level": 7
             }
-        ]
+        ],
+        "active": true
     },
     {
         "id": 5,
@@ -95,7 +96,8 @@
             {
                 "id": 3, "level": 7
             }
-        ]
+        ],
+        "active": true
     },
     {
         "id": 6,
@@ -114,7 +116,8 @@
             {
                 "id": 4, "level": 7
             }
-        ]
+        ],
+        "active": true
     }
 
 ]

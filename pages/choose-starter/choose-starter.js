@@ -3,20 +3,22 @@ $(document).ready(function () {
         let container = $("#starters-container");
 
         data.forEach(pokemon => {
-            let card = `
-                <div class="col-12 col-sm-6 col-md-4">
-                    <div class="card text-center p-3 h-100" data-id="${pokemon.id}">
-                        <img src="${pokemon.image}" class="card-img-top mx-auto" alt="${pokemon.name}">
-                        <div class="card-body d-flex flex-column justify-content-between">
-                            <h5 class="card-title">${pokemon.name}</h5>
-                            <button class="btn btn-primary btn-sm mt-2 view-details" data-id="${pokemon.id}">
-                                Detalhes
-                            </button>
+            if(pokemon.active) {
+                let card = `
+                    <div class="col-12 col-sm-6 col-md-4">
+                        <div class="card text-center p-3 h-100" data-id="${pokemon.id}">
+                            <img src="${pokemon.image}" class="card-img-top mx-auto" alt="${pokemon.name}">
+                            <div class="card-body d-flex flex-column justify-content-between">
+                                <h5 class="card-title">${pokemon.name}</h5>
+                                <button class="btn btn-primary btn-sm mt-2 view-details" data-id="${pokemon.id}">
+                                    Details
+                                </button>
+                            </div>
                         </div>
                     </div>
-                </div>
-            `;
-            container.append(card);
+                `;
+                container.append(card);
+            }
         });
 
         // Evento para abrir modal com detalhes
