@@ -1,5 +1,4 @@
 (function($){
-
   /* ========= PARÂMETROS DO MAPA ========= */
   const COLS = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--cols'));
   const ROWS = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--rows'));
@@ -273,11 +272,14 @@
     }
     setPlayerPos();
 
+    window.updateWildDefeatsHUD();
+
     // carrega JSONs (encontros só acontecem após carregar)
     loadData().catch(err => {
       console.error('Erro ao carregar JSONs:', err);
     });
   }
+ 
 
   init();
 

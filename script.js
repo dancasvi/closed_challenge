@@ -53,3 +53,41 @@ function checkIfHaveAccount() {
   }
 }
 
+(function (global) {
+
+  // Salva o número atual de defeats no localStorage
+  global.saveWildDefeats = function(n) {
+    n = parseInt(n, 10);
+    if (isNaN(n) || n < 0) n = 0;
+    localStorage.setItem('wildDefeats', n);
+  };
+
+  // Lê o número do localStorage e atualiza a HUD
+  global.updateWildDefeatsHUD = function() {
+    var el = document.getElementById('defeats-count');
+    if (!el) return; // HUD não existe nesta página
+    var n = parseInt(localStorage.getItem('wildDefeats') || '0', 10);
+    if (isNaN(n) || n < 0) n = 0;
+    el.textContent = n;
+  };
+
+  // Incrementa o número de defeats em +1 e atualiza HUD
+  global.incrementWildDefeats = function() {
+    var n = parseInt(localStorage.getItem('wildDefeats') || '0', 10);
+    if (isNaN(n) || n < 0) n = 0;
+    n++;
+    localStorage.setItem('wildDefeats', n);
+    global.updateWildDefeatsHUD();
+  };
+
+  // Retorna o valor atual de wildDefeats
+  global.getWildDefeats = function() {
+    var n = parseInt(localStorage.getItem('wildDefeats') || '0', 10);
+    if (isNaN(n) || n < 0) n = 0;
+    return n;
+  };
+
+})(window);
+
+
+

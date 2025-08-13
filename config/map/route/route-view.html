@@ -50,17 +50,18 @@
     </p>
   </div>
 
-  <div class="options">
-    <ul>
-      <li>Team</li>
-      <li>BAG</li>
-      <li>Save</li>
-      <li>Back Menu</li>
-    </ul>
+  <!-- HUD - Defeats -->
+  <div class="hud text-center mt-2" id="battle-hud" aria-live="polite">
+    <div class="hud-card d-inline-flex align-items-center px-3 py-2 shadow-sm">
+      <span class="hud-label me-2">Defeats:</span>
+      <span class="hud-value" id="defeats-count">0</span>
+    </div>
   </div>
+
 </div>
 
 <!-- Seu JS -->
+<script src="../../../script.js"></script>
 <script src="route-controller.js"></script>
 </body>
 </html>

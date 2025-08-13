@@ -447,6 +447,8 @@ $(function(){
   }
 
   function goToRoute(){
+    incrementWildDefeats();
+
     window.location.href = '../map/route/route-view.html';
   }
 
