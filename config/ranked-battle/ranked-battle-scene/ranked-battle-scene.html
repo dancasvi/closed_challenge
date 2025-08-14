@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ranked Battle</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="./ranked-battle-scene.css" />
+</head>
+<body>
+  <main class="battle-page">
+    <!-- TOPO: Trainer + Start -->
+    <header class="trainer-bar shadow-sm">
+      <div class="container d-flex align-items-center justify-content-between gap-2 py-2">
+        <div class="d-flex align-items-center gap-2">
+          <img id="trainerSprite" class="trainer-sprite" alt="Trainer" src="" />
+          <div class="d-flex flex-column">
+            <span class="small text-muted lh-1">Opponent</span>
+            <strong id="trainerName" class="lh-1">—</strong>
+          </div>
+        </div>
+        <button id="btnStart" class="btn btn-primary btn-sm">Start Battle</button>
+      </div>
+    </header>
+
+    <!-- CONTEÚDO: Stage de batalha -->
+    <section class="container py-3">
+      <div class="battle-stage card">
+        <div class="card-body p-2">
+          <!-- OPONENTE: HUD à esquerda, sprite à direita -->
+          <div class="row align-items-center gx-2 gy-2 opp-row">
+            <div class="col-7 order-1">
+              <div class="hud hud-opponent">
+                <div class="hud-top d-flex justify-content-between align-items-center">
+                  <div class="hud-name">
+                    <strong id="oppName">—</strong>
+                    <span class="text-muted small">Lv.<span id="oppLv">—</span></span>
+                  </div>
+                </div>
+                <div class="hud-hp mt-1" aria-label="Opponent HP">
+                  <div class="hp-bar">
+                    <div id="oppHpFill" class="hp-fill" style="width:100%;"></div>
+                  </div>
+                </div>
+                <div class="hud-balls mt-1" id="oppBalls"></div>
+              </div>
+            </div>
+            <div class="col-5 text-end order-2">
+              <img id="oppSprite" class="poke-sprite opp-sprite" alt="Opponent Pokémon" src="" />
+            </div>
+          </div>
+
+          <div class="my-2"></div>
+
+          <!-- PLAYER: sprite à esquerda, HUD à direita -->
+          <div class="row align-items-center gx-2 gy-2 ply-row">
+            <div class="col-5 text-start order-1">
+              <img id="plySprite" class="poke-sprite ply-sprite" alt="Player Pokémon" src="" />
+            </div>
+            <div class="col-7 order-2">
+              <div class="hud hud-player ms-auto">
+                <div class="hud-top d-flex justify-content-between align-items-center">
+                  <div class="hud-name">
+                    <strong id="plyName">—</strong>
+                    <span class="text-muted small">Lv.<span id="plyLv">—</span></span>
+                  </div>
+                </div>
+                <div class="hud-hp mt-1" aria-label="Player HP">
+                  <div class="hp-bar">
+                    <div id="plyHpFill" class="hp-fill" style="width:100%;"></div>
+                  </div>
+                </div>
+                <div class="hud-balls mt-1" id="plyBalls"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Espaçador que acompanha a altura do footer (dinâmico) -->
+      <div class="bottom-safe-spacer" aria-hidden="true"></div>
+    </section>
+
+    <!-- RODAPÉ: Chat/Menu -->
+    <footer class="chat-footer">
+      <div class="container">
+        <div id="chatArea" class="chat-bubble" role="status" aria-live="polite"></div>
+      </div>
+    </footer>
+  </main>
+
+  <!-- Modal: Give Up -->
+  <div class="modal fade" id="giveUpModal" tabindex="-1" aria-labelledby="giveUpModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-6" id="giveUpModalLabel">Confirm Give Up</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          Are you sure you want to give up?
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="btnGiveUpNo">No</button>
+          <button type="button" class="btn btn-danger" id="btnGiveUpYes">Yes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="./ranked-battle-scene.js"></script>
+</body>
+</html>

@@ -167,6 +167,7 @@ function openTrainerModal(trainer, state, pokeById) {
     $footer.off("click", "#btnChallenge").on("click", "#btnChallenge", function () {
       // Aqui você pode iniciar a batalha, navegar, etc.
       // e.g.: window.location.href = './battle.html';
+      window.location.href = '../ranked-battle/ranked-battle-scene/ranked-battle-scene.html';
       const bs = bootstrap.Modal.getOrCreateInstance(modalEl);
       bs.hide();
     });

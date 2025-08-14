@@ -1,0 +1,130 @@
+:root {
+  --footer-safe-bottom: env(safe-area-inset-bottom, 0px);
+  --footer-bg: #ffffff;
+  --page-bg: #f7f7fb;
+
+  --hp-bg: #e9ecef;
+  --hp-fill: #43c26b; /* verde */
+  --hp-low: #f26d6d;  /* vermelho quando baixo */
+  --hud-bg: #ffffff;
+
+  /* altura dinâmica do footer (atualizada via JS) */
+  --chat-footer-height: 160px; /* fallback */
+}
+
+html, body { height: 100%; }
+body { background: var(--page-bg); }
+
+.battle-page {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* TOPO */
+.trainer-bar {
+  position: sticky;
+  top: 0; z-index: 10;
+  background: #fff;
+  border-bottom: 1px solid rgba(0,0,0,.06);
+}
+.trainer-sprite {
+  width: 48px; height: 48px;
+  object-fit: contain;
+  image-rendering: pixelated;
+}
+
+/* STAGE */
+.battle-stage {
+  background: var(--hud-bg);
+  border: 1px solid rgba(0,0,0,.08);
+}
+
+/* sprites */
+.poke-sprite {
+  width: 120px; height: 120px;
+  object-fit: contain;
+  image-rendering: pixelated;
+}
+.opp-sprite { transform: scale(1.05); }
+.ply-sprite { transform: scale(1.05); }
+
+/* HUDs */
+.hud {
+  border: 1px solid rgba(0,0,0,.08);
+  border-radius: 10px;
+  padding: 8px;
+  background: #fff;
+}
+.hud-name strong { margin-right: 6px; }
+
+/* HP bar */
+.hp-bar {
+  width: 100%;
+  height: 10px;
+  background: var(--hp-bg);
+  border-radius: 6px;
+  overflow: hidden;
+}
+.hp-fill {
+  height: 100%;
+  width: 100%;
+  background: var(--hp-fill);
+  transition: width .3s ease;
+}
+.hp-fill.low { background: var(--hp-low); }
+
+/* Pokébolinhas abaixo da vida */
+.hud-balls {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.hud-balls .ball {
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  border: 1px solid rgba(0,0,0,.2);
+  background: radial-gradient(circle at 50% 40%, #fff 0 35%, #d00 36% 50%, #fff 51%);
+  position: relative;
+}
+.hud-balls .ball::after {
+  content: "";
+  position: absolute;
+  top: 48%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 4px; height: 4px;
+  background: #fff;
+  border: 1px solid rgba(0,0,0,.3);
+  border-radius: 50%;
+}
+.hud-balls .ball.empty { background: #e9ecef; }
+
+/* CHAT FIXO (rodapé) */
+.chat-footer {
+  position: fixed; left: 0; right: 0; bottom: 0;
+  background: linear-gradient(180deg, rgba(247,247,251,0.0) 0%, rgba(247,247,251,1) 16%), var(--footer-bg);
+  padding-bottom: calc(12px + var(--footer-safe-bottom));
+  padding-top: 12px;
+  border-top: 1px solid rgba(0,0,0,.06);
+  z-index: 20;
+}
+.chat-bubble {
+  background: #fff;
+  border: 1px solid rgba(0,0,0,.08);
+  border-radius: 12px;
+  padding: 12px;
+  box-shadow: 0 2px 6px rgba(0,0,0,.04);
+}
+.chat-actions .btn { min-height: 44px; }
+
+/* Espaço para o conteúdo não ficar coberto pelo rodapé (dinâmico) */
+.bottom-safe-spacer { height: calc(var(--chat-footer-height) + 16px); }
+
+/* Responsivo: quando a tela é muito estreita, encolhe sprite para caber */
+@media (max-width: 360px) {
+  .poke-sprite { width: 96px; height: 96px; }
+}
+
+/* Micro interação */
+button:active { transform: scale(0.98); }
