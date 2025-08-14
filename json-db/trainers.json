@@ -137,5 +137,71 @@
         "exp": 10000,
         "rank": 7,
         "category": "champion"
+    },
+    {
+        "id": 8,
+        "name": "Poke Fan Lucas",
+        "image": "",
+        "region": "Hoenn",
+        "description": "A proud father",
+        "pokemon": [
+            {
+                "id": 311,
+                "level": 20,
+                "moves" : [17]
+            },
+            {
+                "id": 312,
+                "level": 20,
+                "moves" : [17]
+            }
+        ],
+        "exp": 2000,
+        "rank": 8,
+        "category": "common"
+    },
+    {
+        "id": 9,
+        "name": "Hiker Gabriel",
+        "image": "",
+        "region": "Hoenn",
+        "description": "A pokemon trainer that likes do explore mountain fields.",
+        "pokemon": [
+            {
+                "id": 74,
+                "level": 22,
+                "moves" : [1, 8]
+            },
+            {
+                "id": 66,
+                "level": 23,
+                "moves" : [1, 18]
+            }
+        ],
+        "exp": 2000,
+        "rank": 8,
+        "category": "common"
+    },
+    {
+        "id": 10,
+        "name": "Pokemaniac Luis",
+        "image": "",
+        "region": "Kanto",
+        "description": "A weird guy that likes to cosplay as pokemon.",
+        "pokemon": [
+            {
+                "id": 327,
+                "level": 24,
+                "moves" : [1]
+            },
+            {
+                "id": 327,
+                "level": 25,
+                "moves" : [1]
+            }
+        ],
+        "exp": 2000,
+        "rank": 8,
+        "category": "common"
     }
 ]

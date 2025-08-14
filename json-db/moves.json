@@ -174,5 +174,27 @@
         "secondaryEffect": "flinch",
         "description": "A physical Psychic-type attack that may cause the target to flinch.",
         "effect": "flinch"
+    },
+    {
+        "id": 17,
+        "name": "Thunder Shock",
+        "type": "Electric",
+        "power": 40,
+        "accuracy": 100,
+        "priority": 0,
+        "secondaryEffect": null,
+        "description": "An electrical attack that may paralyze the foe.",
+        "effect": null
+    },
+    {
+        "id": 18,
+        "name": "Karate Chop",
+        "type": "Fighting",
+        "power": 50,
+        "accuracy": 100,
+        "priority": 0,
+        "secondaryEffect": null,
+        "description": "A chopping attack with a high critical-hit ratio.",
+        "effect": null
     }
 ]
