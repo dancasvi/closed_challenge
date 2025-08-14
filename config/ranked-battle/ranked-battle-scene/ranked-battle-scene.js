@@ -11,6 +11,15 @@
   let pokedexIndex = new Map();
   let trainers = [];
   let moves = [];
+  let movesIndex = new Map();
+
+  // Guarda o estado da batalha atual
+  const battleState = {
+    env: null,
+    playerMon: null,
+    opponent: null,
+    opponentFirst: null,
+  };
 
   // ===== UI refs =====
   const $trainerName   = () => $("#trainerName");
@@ -59,7 +68,10 @@
       console.warn('current_rank precisa ser número. Valor:', rank.value);
       return null;
     }
-    return { rank: rankNum, account: account.value, bag: bag.value };
+    // garante objetos válidos
+    const accountObj = account.value && typeof account.value === "object" ? account.value : {};
+    const bagObj = bag.value && typeof bag.value === "object" ? bag.value : {};
+    return { rank: rankNum, account: accountObj, bag: bagObj };
   }
 
   // ===== Carregamento =====
@@ -76,10 +88,12 @@
       loadJson(PATH_MOVES),
     ]);
     pokedexIndex = new Map(pokedex.map(p => [p.id, p]));
+    movesIndex = new Map(moves.map(m => [m.id, m]));
   }
 
   // ===== Utilidades =====
   function firstPlayerPokemon(accountObj) {
+    if (!accountObj || typeof accountObj !== "object") return null;
     const keys = Object.keys(accountObj)
       .filter(k => /^pokemon-\d+$/.test(k))
       .sort((a, b) => Number(a.split("-")[1]) - Number(b.split("-")[1]));
@@ -88,6 +102,7 @@
   }
 
   function countPlayerTeam(accountObj) {
+    if (!accountObj || typeof accountObj !== "object") return 0;
     return Object.keys(accountObj).filter(k => /^pokemon-\d+$/.test(k)).length || 0;
   }
 
@@ -158,19 +173,6 @@
     `);
   }
 
-  // Modal GiveUp
-  function showGiveUpModal() {
-    const modalEl = document.getElementById("giveUpModal");
-    const modal = new bootstrap.Modal(modalEl);
-    // Botões
-    $("#btnGiveUpYes").off("click").on("click", () => {
-      // redireciona para a tela principal de ranked
-      window.location.href = "../ranked-battle.html";
-    });
-    // btnGiveUpNo já tem data-bs-dismiss="modal" no HTML
-    modal.show();
-  }
-
   function renderMenu(onAction) {
     $chat().html(`
       <div class="d-flex align-items-center justify-content-between gap-2 chat-actions">
@@ -186,6 +188,97 @@
     requestAnimationFrame(measureFooter);
   }
 
+  // ===== Attack Menu =====
+  function getPlayerMoves(playerMon) {
+    if (!playerMon) return [];
+    // Preferir a lista salva no closed_challenge_account (array de IDs)
+    if (Array.isArray(playerMon.moves) && playerMon.moves.length) {
+      return playerMon.moves
+        .map((id, idx) => {
+          const m = movesIndex.get(Number(id));
+          if (!m) return null;
+          return { slot: idx + 1, id: m.id, name: m.name, power: m.power ?? "?" };
+        })
+        .filter(Boolean)
+        .slice(0, 4);
+    }
+
+    // Fallback: baseado no pokémon e nível (pega até 4 movimentos aprendidos)
+    const species = pokemonById(playerMon.idpoke);
+    if (!species || !Array.isArray(species.moves)) return [];
+    const learned = species.moves
+      .filter(m => (m.level ?? 1) <= (playerMon.currentLevel ?? 1))
+      .map((m, idx) => {
+        const full = movesIndex.get(Number(m.id));
+        if (!full) return null;
+        return { slot: idx + 1, id: full.id, name: full.name, power: full.power ?? "?" };
+      })
+      .filter(Boolean)
+      .slice(-4); // últimos aprendidos
+    // reindexa os slots 1–4
+    return learned.map((m, i) => ({ ...m, slot: i + 1 }));
+  }
+
+  function renderAttackMenu(playerMon, onBackToMainMenu) {
+    const list = getPlayerMoves(playerMon);
+    if (!list.length) {
+      renderChatMessage("No moves available.");
+      setTimeout(() => onBackToMainMenu?.(), 1000);
+      return;
+    }
+
+    const buttons = list.map(m =>
+      `<button class="btn btn-outline-dark move-btn" data-slot="${m.slot}">
+         ${m.name} (${m.power ?? "?"})
+       </button>`
+    );
+
+    // Completa até 4 slots com placeholders desabilitados
+    while (buttons.length < 4) {
+      buttons.push(`<button class="btn btn-outline-dark move-btn" disabled>—</button>`);
+    }
+
+    $chat().html(`
+      <div class="moves-grid">
+        ${buttons.join("")}
+      </div>
+    `);
+
+    // Clique em um golpe => log + volta ao menu principal
+    $chat().find(".move-btn[data-slot]").on("click", function () {
+      const slot = Number($(this).data("slot"));
+      console.log(`jogador selecionou atk ${slot}.`);
+      onBackToMainMenu?.();
+    });
+
+    requestAnimationFrame(measureFooter);
+  }
+
+  // Modal GiveUp
+  function showGiveUpModal() {
+    const modalEl = document.getElementById("giveUpModal");
+    const modal = new bootstrap.Modal(modalEl);
+    $("#btnGiveUpYes").off("click").on("click", () => {
+      window.location.href = "../ranked-battle.html";
+    });
+    modal.show();
+  }
+
+  // ===== Menu principal (handlers nomeados) =====
+  function handleMainMenuAction(action) {
+    if (action === "attack") {
+      renderAttackMenu(battleState.playerMon, showMainMenu);
+    } else if (action === "item") {
+      renderChatMessage("You opened your <strong>Bag</strong>.");
+      setTimeout(showMainMenu, 800);
+    } else if (action === "giveup") {
+      showGiveUpModal();
+    }
+  }
+  function showMainMenu() {
+    renderMenu(handleMainMenuAction);
+  }
+
   // ===== Batalha (setup) =====
   function startBattle(env) {
     const playerMon = firstPlayerPokemon(env.account);
@@ -193,6 +286,12 @@
 
     const opponentTrainer = trainerByRank(env.rank);
     if (!opponentTrainer) return;
+
+    // guardar estado p/ menus
+    battleState.env = env;
+    battleState.playerMon = playerMon;
+    battleState.opponent = opponentTrainer;
+    battleState.opponentFirst = opponentTrainer.pokemon?.[0];
 
     // Topo: nome + sprite
     $trainerName().text(opponentTrainer.name || "Trainer");
@@ -202,7 +301,7 @@
       if (fallback) $(this).attr("src", fallback);
     });
 
-    const opponentFirst = opponentTrainer.pokemon?.[0];
+    const opponentFirst = battleState.opponentFirst;
     if (!opponentFirst) return;
 
     // Dados de exibição
@@ -210,22 +309,22 @@
     const oppPokeData    = pokemonById(opponentFirst.id) || { name: `#${opponentFirst.id}`, image: "" };
 
     // HUD Opponent
-    $("#oppName").text(oppPokeData.name);
-    $("#oppLv").text(opponentFirst.level ?? "—");
-    renderBalls($("#oppBalls"), (opponentTrainer.pokemon || []).length);
-    $("#oppSprite").attr("src", oppPokeData.image || "").attr("alt", oppPokeData.name);
+    $oppName().text(oppPokeData.name);
+    $oppLv().text(opponentFirst.level ?? "—");
+    renderBalls($oppBalls(), (opponentTrainer.pokemon || []).length);
+    $oppSprite().attr("src", oppPokeData.image || "").attr("alt", oppPokeData.name);
 
     // HUD Player
-    $("#plyName").text(playerPokeData.name);
-    $("#plyLv").text(playerMon.currentLevel ?? "—");
-    renderBalls($("#plyBalls"), countPlayerTeam(env.account));
-    $("#plySprite").attr("src", playerPokeData.image || "").attr("alt", playerPokeData.name);
+    $plyName().text(playerPokeData.name);
+    $plyLv().text(playerMon.currentLevel ?? "—");
+    renderBalls($plyBalls(), countPlayerTeam(env.account));
+    $plySprite().attr("src", playerPokeData.image || "").attr("alt", playerPokeData.name);
 
     // HP inicial (cheio)
     const oppMaxHp = calcMaxHp(opponentFirst.level);
     const plyMaxHp = calcMaxHp(playerMon.currentLevel);
-    setHp($("#oppHpFill"), oppMaxHp, oppMaxHp);
-    setHp($("#plyHpFill"), plyMaxHp, plyMaxHp);
+    setHp($oppHpFill(), oppMaxHp, oppMaxHp);
+    setHp($plyHpFill(), plyMaxHp, plyMaxHp);
 
     // Logs exigidos
     console.log(`player usou pokemon ${pokemonNameById(playerMon.idpoke)};`);
@@ -233,18 +332,7 @@
 
     // Rodapé: 1) mensagem -> 2) menu (delay 3000ms)
     renderChatMessage(`Trainer <strong>${opponentTrainer.name}</strong> accepts your challenge!`);
-    setTimeout(() => renderMenu((action) => {
-      if (action === "attack") {
-        console.log("Menu: Attack");
-        renderChatMessage("You chose <strong>Attack</strong>.");
-      } else if (action === "item") {
-        console.log("Menu: Item");
-        renderChatMessage("You opened your <strong>Bag</strong>.");
-      } else if (action === "giveup") {
-        console.log("Menu: GiveUp");
-        showGiveUpModal();
-      }
-    }), 3000);
+    setTimeout(showMainMenu, 3000);
   }
 
   // ===== Inicialização =====

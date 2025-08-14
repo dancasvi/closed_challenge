@@ -118,6 +118,19 @@ body { background: var(--page-bg); }
 }
 .chat-actions .btn { min-height: 44px; }
 
+/* Grade de golpes (Attack) */
+.moves-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.move-btn.btn {
+  min-height: 44px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 /* Espaço para o conteúdo não ficar coberto pelo rodapé (dinâmico) */
 .bottom-safe-spacer { height: calc(var(--chat-footer-height) + 16px); }
 
